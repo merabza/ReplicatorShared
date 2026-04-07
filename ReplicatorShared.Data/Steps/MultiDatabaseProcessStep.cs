@@ -27,7 +27,7 @@ public sealed class MultiDatabaseProcessStep : JobStep
     public List<string> DatabaseNames { get; set; } = [];
 
     public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ApAgentParameters parameters, string procLogFilesFolder)
+        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
     {
         FileManager? localWorkFileManager =
             FileManagersFactory.CreateFileManager(useConsole, logger, procLogFilesFolder);

@@ -76,7 +76,7 @@ public sealed class DatabaseBackupStep : JobStep
     //თუ რომელიმე სამუშაოსათვის შეიქმნა ცალკე პროცესი, შემდგომი სამუშაოების გაშვება ამ პროცესზე იქნება დამოკიდებული, მიუხედავად ხაზების ნომრებისა
     //თითოეული სამუშაო ახალ პროცესს ქმნის მხოლოდ იმ შემთხვევაში, თუ შემდეგი სამუშაოს პროცესის ხაზი არ ემთხვევა მიმდინარეს.
     public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ApAgentParameters parameters, string procLogFilesFolder)
+        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
     {
         var par = DatabaseBackupStepParameters.Create(logger, httpClientFactory, useConsole,
             DatabaseServerConnectionName, new DatabaseServerConnections(parameters.DatabaseServerConnections),

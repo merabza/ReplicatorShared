@@ -14,7 +14,7 @@ using SystemTools.SystemToolsShared;
 
 namespace ReplicatorShared.Data.Models;
 
-public sealed class ApAgentParameters : IParametersWithFileStorages, IParametersWithDatabaseServerConnections,
+public sealed class ReplicatorParameters : IParametersWithFileStorages, IParametersWithDatabaseServerConnections,
     IParametersWithApiClients, IParametersWithSmartSchemas, IParametersWithArchivers, IParametersWithExcludeSets
 {
     public const string DefaultUploadFileTempExtension = ".up!";

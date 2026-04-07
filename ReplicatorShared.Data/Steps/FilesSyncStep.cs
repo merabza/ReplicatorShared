@@ -19,7 +19,7 @@ public sealed class FilesSyncStep : JobStep
     public string? ReplacePairsSet { get; set; } //აკრძალული თანმიმდევრობის ჩანაცვლების კომპლექტის სახელი
 
     public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ApAgentParameters parameters, string procLogFilesFolder)
+        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
     {
         var filesSyncStepParameters = FilesSyncStepParameters.Create(logger, useConsole, SourceFileStorageName,
             DestinationFileStorageName, ExcludeSet, DeleteDestinationFilesSet, ReplacePairsSet,

@@ -26,7 +26,7 @@ public sealed class ExecuteSqlCommandStep : JobStep
     public int CommandTimeOut { get; set; }
 
     public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ApAgentParameters parameters, string procLogFilesFolder)
+        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
     {
         var par = ExecuteSqlCommandStepParameters.Create(logger, httpClientFactory, useConsole, ExecuteQueryCommand,
             DatabaseWebAgentName, new ApiClients(parameters.ApiClients), DatabaseServerConnectionName,

@@ -14,7 +14,7 @@ public sealed class RunProgramStep : JobStep
     public string? Arguments { get; set; } //პროგრამის არგუმენტები
 
     public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ApAgentParameters parameters, string procLogFilesFolder)
+        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
     {
         var par = RunProgramStepParameters.Create(logger, useConsole, Program, Arguments);
 
