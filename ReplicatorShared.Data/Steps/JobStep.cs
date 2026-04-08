@@ -35,17 +35,9 @@ public /*open*/ class JobStep : ItemData
 
     public DateTime StartAt { get; set; } //საყრდენი დროის წერტილი, საიდანაც აითვლება პერიოდები.
 
-    //public virtual bool Run(ILogger logger, ApAgentParameters parameters, Processes processes, CancellationToken cancellationToken = default)
-    //{
-    //  Console.WriteLine("Not Implemented Task Started");
-    //  Thread.Sleep(1000);
-    //  Console.WriteLine("Not Implemented Task Finished");
-
-    //  return false;
-    //}
-
-    public virtual ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
+    public virtual ProcessesToolAction? GetToolAction(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, bool useConsole, ProcessManager processManager,
+        ReplicatorParameters parameters, string procLogFilesFolder)
     {
         return null;
     }

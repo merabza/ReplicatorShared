@@ -26,8 +26,9 @@ public sealed class MultiDatabaseProcessStep : JobStep
     //თუ DatabaseSet-ის მნიშვნელობაა DatabasesBySelection, მაშინ მონაცემთა ბაზების სახელები უნდა ავიღოთ ქვემოთ მოცემული სიიდან
     public List<string> DatabaseNames { get; set; } = [];
 
-    public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
+    public override ProcessesToolAction? GetToolAction(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, bool useConsole, ProcessManager processManager,
+        ReplicatorParameters parameters, string procLogFilesFolder)
     {
         FileManager? localWorkFileManager =
             FileManagersFactory.CreateFileManager(useConsole, logger, procLogFilesFolder);
@@ -38,7 +39,7 @@ public sealed class MultiDatabaseProcessStep : JobStep
             return null;
         }
 
-        var par = MultiDatabaseProcessStepParameters.Create(logger, httpClientFactory, useConsole,
+        var par = MultiDatabaseProcessStepParameters.Create(appName, logger, httpClientFactory, useConsole,
             new ApiClients(parameters.ApiClients), DatabaseServerConnectionName,
             new DatabaseServerConnections(parameters.DatabaseServerConnections), procLogFilesFolder);
 

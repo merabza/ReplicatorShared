@@ -25,12 +25,13 @@ public sealed class ExecuteSqlCommandStep : JobStep
     //ბრძანების შესრულების ტაიმაუტი. თუ ამ დროში ბრძანება არ დასრულდა. პროცესი უნდა გაჩერდეს.
     public int CommandTimeOut { get; set; }
 
-    public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
+    public override ProcessesToolAction? GetToolAction(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, bool useConsole, ProcessManager processManager,
+        ReplicatorParameters parameters, string procLogFilesFolder)
     {
-        var par = ExecuteSqlCommandStepParameters.Create(logger, httpClientFactory, useConsole, ExecuteQueryCommand,
-            DatabaseWebAgentName, new ApiClients(parameters.ApiClients), DatabaseServerConnectionName,
-            new DatabaseServerConnections(parameters.DatabaseServerConnections));
+        var par = ExecuteSqlCommandStepParameters.Create(appName, logger, httpClientFactory, useConsole,
+            ExecuteQueryCommand, DatabaseWebAgentName, new ApiClients(parameters.ApiClients),
+            DatabaseServerConnectionName, new DatabaseServerConnections(parameters.DatabaseServerConnections));
 
         if (par is not null)
         {

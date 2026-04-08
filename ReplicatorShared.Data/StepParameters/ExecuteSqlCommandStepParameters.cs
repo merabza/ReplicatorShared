@@ -1,12 +1,12 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
-using OneOf;
 
 namespace ReplicatorShared.Data.StepParameters;
 
@@ -22,12 +22,13 @@ public sealed class ExecuteSqlCommandStepParameters
 
     public string ExecuteQueryCommand { get; }
 
-    public static ExecuteSqlCommandStepParameters? Create(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, string? executeQueryCommand, string? webAgentName, ApiClients apiClients,
-        string? databaseServerConnectionName, DatabaseServerConnections databaseServerConnections)
+    public static ExecuteSqlCommandStepParameters? Create(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, bool useConsole, string? executeQueryCommand, string? webAgentName,
+        ApiClients apiClients, string? databaseServerConnectionName,
+        DatabaseServerConnections databaseServerConnections)
     {
         OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult = DatabaseManagersFactory
-            .CreateDatabaseManager(logger, useConsole, databaseServerConnectionName, databaseServerConnections,
+            .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
                 apiClients, httpClientFactory, null, null, CancellationToken.None).Result;
 
         if (createDatabaseManagerResult.IsT1)

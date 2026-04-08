@@ -12,8 +12,9 @@ public sealed class UnZipOnPlaceStep : JobStep
     public string? PathWithZips { get; set; }
     public bool WithSubFolders { get; set; }
 
-    public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
+    public override ProcessesToolAction? GetToolAction(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, bool useConsole, ProcessManager processManager,
+        ReplicatorParameters parameters, string procLogFilesFolder)
     {
         if (!string.IsNullOrWhiteSpace(PathWithZips))
         {

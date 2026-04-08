@@ -25,7 +25,7 @@ public sealed class ReplicatorParameters : IParametersWithFileStorages, IParamet
     public string? LogFolder { get; set; }
     public string? WorkFolder { get; set; }
     public string? ProcLogFilesFolder { get; set; }
-    public string? ApAgentParametersFileNameForLocalReServer { get; set; }
+    public string? ReplicatorParametersFileNameForLocalReplicatorService { get; set; }
 
     public string UploadFileTempExtension
     {
@@ -100,21 +100,6 @@ public sealed class ReplicatorParameters : IParametersWithFileStorages, IParamet
         string? workFolderCandidate = workFolder is null ? null : Path.Combine(workFolder, defaultFolderName);
         return workFolderCandidate;
     }
-
-    //public string GetDownloadFileTempExtension()
-    //{
-    //    return DownloadFileTempExtension ?? DefaultDownloadFileTempExtension;
-    //}
-
-    //public string GetArchivingFileTempExtension()
-    //{
-    //    return ArchivingFileTempExtension ?? DefaultArchivingFileTempExtension;
-    //}
-
-    //public string GetDateMask()
-    //{
-    //    return DateMask ?? DefaultDateMask;
-    //}
 
     public Dictionary<string, JobStep> GetSteps()
     {
@@ -206,8 +191,8 @@ public sealed class ReplicatorParameters : IParametersWithFileStorages, IParamet
         }).ToDictionary(k => k.Key, v => v.Value);
     }
 
-    public bool RunAllSteps(ILogger logger, IHttpClientFactory httpClientFactory, bool useConsole, string scheduleName,
-        IProcesses processes, string procLogFilesFolder)
+    public bool RunAllSteps(string appName, ILogger logger, IHttpClientFactory httpClientFactory, bool useConsole,
+        string scheduleName, IProcesses processes, string procLogFilesFolder)
     {
         if (!JobSchedules.ContainsKey(scheduleName))
         {
@@ -229,8 +214,8 @@ public sealed class ReplicatorParameters : IParametersWithFileStorages, IParamet
             try
             {
                 foreach (ProcessesToolAction? stepToolAction in jobStepNames.Select(name =>
-                             steps[name].GetToolAction(logger, httpClientFactory, useConsole, processManager, this,
-                                 procLogFilesFolder)))
+                             steps[name].GetToolAction(appName, logger, httpClientFactory, useConsole, processManager,
+                                 this, procLogFilesFolder)))
                 {
                     if (stepToolAction is not null)
                     {

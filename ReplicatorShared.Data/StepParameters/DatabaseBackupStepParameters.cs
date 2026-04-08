@@ -1,8 +1,9 @@
-﻿using DatabaseTools.DbTools;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
+using DatabaseTools.DbTools;
 using Microsoft.Extensions.Logging;
+using OneOf;
 using ParametersManagement.LibDatabaseParameters;
 using ParametersManagement.LibFileParameters.Models;
 using ReplicatorShared.Data.Models;
@@ -10,7 +11,6 @@ using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 using ToolsManagement.FileManagersMain;
-using OneOf;
 
 namespace ReplicatorShared.Data.StepParameters;
 
@@ -60,13 +60,14 @@ public sealed class DatabaseBackupStepParameters
     public CompressParameters? CompressParameters { get; }
     public UploadParameters UploadParameters { get; }
 
-    public static DatabaseBackupStepParameters? Create(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, string? databaseServerConnectionName, DatabaseServerConnections databaseServerConnections,
-        string? localPath, DatabaseParameters? databaseBackupParameters, EDatabaseSet databaseSet,
-        List<string> databaseNames, string? fileStorageName, string? uploadFileStorageName, string? smartSchemaName,
-        string? localSmartSchemaName, string? uploadSmartSchemaName, string? archiverName, FileStorages fileStorages,
-        SmartSchemas smartSchemas, Archivers archivers, int downloadProcLineId, int compressProcLineId,
-        int uploadProcLineId, string? archiveTempExtension, string? uploadTempExtension, string? dbServerFoldersSetName)
+    public static DatabaseBackupStepParameters? Create(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, bool useConsole, string? databaseServerConnectionName,
+        DatabaseServerConnections databaseServerConnections, string? localPath,
+        DatabaseParameters? databaseBackupParameters, EDatabaseSet databaseSet, List<string> databaseNames,
+        string? fileStorageName, string? uploadFileStorageName, string? smartSchemaName, string? localSmartSchemaName,
+        string? uploadSmartSchemaName, string? archiverName, FileStorages fileStorages, SmartSchemas smartSchemas,
+        Archivers archivers, int downloadProcLineId, int compressProcLineId, int uploadProcLineId,
+        string? archiveTempExtension, string? uploadTempExtension, string? dbServerFoldersSetName)
     {
         if (string.IsNullOrWhiteSpace(localPath))
         {
@@ -83,8 +84,8 @@ public sealed class DatabaseBackupStepParameters
         }
 
         OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult = DatabaseManagersFactory
-            .CreateDatabaseManager(logger, useConsole, databaseServerConnectionName, databaseServerConnections, null,
-                httpClientFactory, null, null, CancellationToken.None).Result;
+            .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
+                null, httpClientFactory, null, null, CancellationToken.None).Result;
 
         if (createDatabaseManagerResult.IsT1)
         {

@@ -18,8 +18,9 @@ public sealed class FilesSyncStep : JobStep
     public string? DeleteDestinationFilesSet { get; set; } //მიზნის მხარეს წინასწარ წასაშლელი ფაილები კომპლექტის სახელი
     public string? ReplacePairsSet { get; set; } //აკრძალული თანმიმდევრობის ჩანაცვლების კომპლექტის სახელი
 
-    public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
+    public override ProcessesToolAction? GetToolAction(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, bool useConsole, ProcessManager processManager,
+        ReplicatorParameters parameters, string procLogFilesFolder)
     {
         var filesSyncStepParameters = FilesSyncStepParameters.Create(logger, useConsole, SourceFileStorageName,
             DestinationFileStorageName, ExcludeSet, DeleteDestinationFilesSet, ReplacePairsSet,

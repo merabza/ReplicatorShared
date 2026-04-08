@@ -46,8 +46,9 @@ public sealed class FilesBackupStep : JobStep
     //დასაარქივებელი ფოლდერების ჩამონათვალი. (სახელი გამოიყენება ნიღბის კოდად)
     public Dictionary<string, string> BackupFolderPaths { get; set; } = [];
 
-    public override ProcessesToolAction? GetToolAction(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ProcessManager processManager, ReplicatorParameters parameters, string procLogFilesFolder)
+    public override ProcessesToolAction? GetToolAction(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, bool useConsole, ProcessManager processManager,
+        ReplicatorParameters parameters, string procLogFilesFolder)
     {
         var par = FilesBackupStepParameters.Create(logger, useConsole, LocalPath, ArchiverName, ExcludeSetName,
             UploadFileStorageName, MaskName, DateMask, LocalSmartSchemaName, UploadSmartSchemaName, BackupFolderPaths,

@@ -1,12 +1,12 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
 using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 using ToolsManagement.FileManagersMain;
-using OneOf;
 
 namespace ReplicatorShared.Data.StepParameters;
 
@@ -22,12 +22,13 @@ public sealed class MultiDatabaseProcessStepParameters
     public IDatabaseManager AgentClient { get; }
     public FileManager LocalWorkFileManager { get; } //ლოკალური ფოლდერის მენეჯერი
 
-    public static MultiDatabaseProcessStepParameters? Create(ILogger logger, IHttpClientFactory httpClientFactory,
-        bool useConsole, ApiClients apiClients, string? databaseServerConnectionName,
-        DatabaseServerConnections databaseServerConnections, string procLogFilesFolder)
+    public static MultiDatabaseProcessStepParameters? Create(string appName, ILogger logger,
+        IHttpClientFactory httpClientFactory, bool useConsole, ApiClients apiClients,
+        string? databaseServerConnectionName, DatabaseServerConnections databaseServerConnections,
+        string procLogFilesFolder)
     {
         OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult = DatabaseManagersFactory
-            .CreateDatabaseManager(logger, useConsole, databaseServerConnectionName, databaseServerConnections,
+            .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
                 apiClients, httpClientFactory, null, null, CancellationToken.None).Result;
 
         if (createDatabaseManagerResult.IsT1)
