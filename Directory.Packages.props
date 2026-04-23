@@ -5,7 +5,7 @@
   <!--.NET 9 packages. Most of them will work on .NET 8. If you need to, make the updates here individually.-->
   <ItemGroup>
     <!-- Static code analysis -->
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.23.0.137933" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.24.0.138807" />
     <PackageVersion Include="coverlet.collector" Version="8.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
