@@ -8,6 +8,8 @@ using DatabaseTools.DbTools;
 using DatabaseTools.DbTools.Models;
 using Microsoft.Extensions.Logging;
 using OneOf;
+using Polly;
+using Polly.Retry;
 using ReplicatorShared.Data.Models;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
@@ -21,11 +23,23 @@ namespace ReplicatorShared.Data.StepCommands;
 
 public sealed class DatabaseBackupStepCommand : ProcessesToolAction
 {
+    private static readonly ResiliencePipeline<OneOf<BackupFileParameters, Error[]>> Pipeline =
+        new ResiliencePipelineBuilder<OneOf<BackupFileParameters, Error[]>>().AddRetry(
+            new RetryStrategyOptions<OneOf<BackupFileParameters, Error[]>>
+            {
+                ShouldHandle =
+                    new PredicateBuilder<OneOf<BackupFileParameters, Error[]>>()
+                        .HandleResult(result => result.IsT1),
+                Delay = TimeSpan.FromSeconds(30),
+                MaxRetryAttempts = 2,
+                BackoffType = DelayBackoffType.Exponential,
+                UseJitter = true
+            }).Build();
+
     private readonly string _downloadTempExtension;
     private readonly JobStep _jobStep;
     private readonly ILogger _logger;
     private readonly DatabaseBackupStepParameters _par;
-
     private readonly bool _useConsole;
 
     // ReSharper disable once ConvertToPrimaryConstructor
@@ -120,8 +134,10 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
             }
 
             OneOf<BackupFileParameters, Error[]> createBackupResult =
-                await _par.AgentClient.CreateBackup(_par.DbBackupParameters, databaseName, _par.DbServerFoldersSetName,
-                    cancellationToken);
+                await Pipeline.ExecuteAsync(
+                    async ct => await _par.AgentClient.CreateBackup(_par.DbBackupParameters, databaseName,
+                        _par.DbServerFoldersSetName, ct), cancellationToken);
+
             if (createBackupResult.IsT1)
             {
                 Error.PrintErrorsOnConsole(createBackupResult.AsT1);
