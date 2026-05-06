@@ -1,2 +1,4 @@
-# ApAgentData
-ApAgent and ReServer projects shared data
+# ReplicatorShared
+
+ReplicatorConsole and Replicator projects shared data
+
