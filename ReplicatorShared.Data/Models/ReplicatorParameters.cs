@@ -15,7 +15,8 @@ using SystemTools.SystemToolsShared;
 namespace ReplicatorShared.Data.Models;
 
 public sealed class ReplicatorParameters : IParametersWithFileStorages, IParametersWithDatabaseServerConnections,
-    IParametersWithApiClients, IParametersWithSmartSchemas, IParametersWithArchivers, IParametersWithExcludeSets
+    IParametersWithApiClients, IParametersWithSmartSchemas, IParametersWithArchivers, IParametersWithExcludeSets,
+    IParametersWithRetryStrategyParameters
 {
     public const string DefaultUploadFileTempExtension = ".up!";
     public const string DefaultDownloadFileTempExtension = ".down!";
@@ -85,6 +86,8 @@ public sealed class ReplicatorParameters : IParametersWithFileStorages, IParamet
 
         return true;
     }
+
+    public Dictionary<string, RetryStrategyParameters> RetryStrategyParameters { get; set; } = [];
 
     public Dictionary<string, SmartSchema> SmartSchemas { get; set; } = [];
 
