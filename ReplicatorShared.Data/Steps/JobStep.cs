@@ -12,6 +12,8 @@ public /*open*/ class JobStep : ItemData
 {
     public bool Enabled { get; set; } //მიუთითებს დასაშვებია თუ არა ამ ნაბიჯის გამოყენება.
 
+    public string? RetryStrategyName { get; set; } //რომელი Retry Strategy-ით უნდა გადეცეს ცდა ჩაშლის შემთხვევაში
+
     //public int SequentialNumber { get; set; } //ამოცანის რიგითი ნომერი. ამოცანების შესრულებისას ეს ნომერი გამოყენებული იქნება თანმიმდევრობის დასადგენად.
     public int ProcLineId
     {
