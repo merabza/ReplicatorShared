@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly;
 using ReplicatorShared.Data.FolderProcessors;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
@@ -19,8 +20,8 @@ public sealed class FilesMoveStepCommand : ProcessesToolAction
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public FilesMoveStepCommand(ILogger logger, bool useConsole, ProcessManager processManager, JobStep jobStep,
-        FilesMoveStepParameters filesMoveStepParameters) : base(logger, null, null, processManager, "Files Move",
-        jobStep.ProcLineId)
+        FilesMoveStepParameters filesMoveStepParameters, ResiliencePipeline<bool>? retryPipeline = null) : base(logger,
+        null, null, processManager, "Files Move", jobStep.ProcLineId, retryPipeline)
     {
         _logger = logger;
         _useConsole = useConsole;

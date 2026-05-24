@@ -30,7 +30,8 @@ public sealed class FilesSyncStep : JobStep
 
         if (filesSyncStepParameters is not null)
         {
-            return new FilesSyncStepCommand(logger, processManager, this, filesSyncStepParameters);
+            return new FilesSyncStepCommand(logger, processManager, this, filesSyncStepParameters,
+                BuildRetryPipeline(RetryStrategyName, parameters));
         }
 
         StShared.WriteErrorLine("filesSyncStepParameters does not created for Files Sync step", useConsole, logger);

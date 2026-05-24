@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly;
 using ReplicatorShared.Data.StepParameters;
 using SystemTools.BackgroundTasks;
 using SystemTools.SystemToolsShared;
@@ -14,8 +15,9 @@ public sealed class RunProgramStepCommand : ProcessesToolAction
     private readonly bool _useConsole;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public RunProgramStepCommand(ILogger logger, bool useConsole, int procLineId, RunProgramStepParameters par) : base(
-        logger, null, null, null, "Run Program", procLineId)
+    public RunProgramStepCommand(ILogger logger, bool useConsole, int procLineId, RunProgramStepParameters par,
+        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, null, null, null, "Run Program", procLineId,
+        retryPipeline)
     {
         _logger = logger;
         _useConsole = useConsole;

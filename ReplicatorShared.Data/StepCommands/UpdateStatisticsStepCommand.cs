@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
+using Polly;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
 using ReplicatorShared.Data.ToolActions;
@@ -16,8 +17,10 @@ public sealed class UpdateStatisticsStepCommand : MultiDatabaseProcessesToolActi
     // ReSharper disable once ConvertToPrimaryConstructor
     public UpdateStatisticsStepCommand(ILogger logger, bool useConsole, string procLogFilesFolder,
         ProcessManager processManager, MultiDatabaseProcessStep multiDatabaseProcessStep,
-        MultiDatabaseProcessStepParameters par, int procLineId) : base(logger, useConsole, procLogFilesFolder,
-        "UpdateStatistics", processManager, multiDatabaseProcessStep, par, "Update Statistics", procLineId)
+        MultiDatabaseProcessStepParameters par, int procLineId,
+        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, useConsole, procLogFilesFolder,
+        "UpdateStatistics", processManager, multiDatabaseProcessStep, par, "Update Statistics", procLineId,
+        retryPipeline)
     {
     }
 

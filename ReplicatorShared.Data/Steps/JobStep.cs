@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
+using ParametersManagement.LibFileParameters.Models;
+using Polly;
+using Polly.Retry;
 using ReplicatorShared.Data.Models;
 using SystemTools.BackgroundTasks;
 using SystemTools.SystemToolsShared;
@@ -42,5 +45,32 @@ public /*open*/ class JobStep : ItemData
         ReplicatorParameters parameters, string procLogFilesFolder)
     {
         return null;
+    }
+
+    //თუ Step-ს მითითებული აქვს RetryStrategyName და ეს სახელი მოიძებნება პარამეტრებში,
+    //აშენდეს Polly-ის ResiliencePipeline. წინააღმდეგ შემთხვევაში null - რეტრაი არ მოხდება.
+    protected static ResiliencePipeline<bool>? BuildRetryPipeline(string? retryStrategyName,
+        ReplicatorParameters parameters)
+    {
+        if (string.IsNullOrWhiteSpace(retryStrategyName))
+        {
+            return null;
+        }
+
+        if (!parameters.RetryStrategyParameters.TryGetValue(retryStrategyName, out RetryStrategyParameters? rsp))
+        {
+            return null;
+        }
+
+        return new ResiliencePipelineBuilder<bool>().AddRetry(new RetryStrategyOptions<bool>
+        {
+            ShouldHandle = new PredicateBuilder<bool>().HandleResult(r => !r)
+                .Handle<Exception>(e => e is not OperationCanceledException),
+            MaxRetryAttempts = rsp.MaxRetryAttempts,
+            BackoffType = rsp.BackoffType,
+            UseJitter = rsp.UseJitter,
+            Delay = rsp.Delay,
+            MaxDelay = rsp.MaxDelay,
+        }).Build();
     }
 }

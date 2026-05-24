@@ -51,7 +51,8 @@ public sealed class FilesMoveStep : JobStep
 
         if (filesMoveStepParameters is not null)
         {
-            return new FilesMoveStepCommand(logger, useConsole, processManager, this, filesMoveStepParameters);
+            return new FilesMoveStepCommand(logger, useConsole, processManager, this, filesMoveStepParameters,
+                BuildRetryPipeline(RetryStrategyName, parameters));
         }
 
         StShared.WriteErrorLine("filesMoveStepParameters does not created for Files Move step", useConsole, logger);

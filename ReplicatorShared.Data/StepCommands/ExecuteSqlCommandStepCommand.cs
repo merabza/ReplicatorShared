@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
+using Polly;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
 using SystemTools.BackgroundTasks;
@@ -17,8 +18,9 @@ public sealed class ExecuteSqlCommandStepCommand : ProcessesToolAction
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ExecuteSqlCommandStepCommand(ILogger logger, ProcessManager processManager,
-        ExecuteSqlCommandStep executeSqlCommandStep, ExecuteSqlCommandStepParameters par) : base(logger, null, null,
-        processManager, "Execute Sql Command", executeSqlCommandStep.ProcLineId)
+        ExecuteSqlCommandStep executeSqlCommandStep, ExecuteSqlCommandStepParameters par,
+        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, null, null, processManager,
+        "Execute Sql Command", executeSqlCommandStep.ProcLineId, retryPipeline)
     {
         _executeSqlCommandStep = executeSqlCommandStep;
         _par = par;

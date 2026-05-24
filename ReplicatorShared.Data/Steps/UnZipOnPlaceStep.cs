@@ -18,8 +18,8 @@ public sealed class UnZipOnPlaceStep : JobStep
     {
         if (!string.IsNullOrWhiteSpace(PathWithZips))
         {
-            return new UnZipOnPlaceCommand(logger, useConsole, processManager, PathWithZips, WithSubFolders,
-                ProcLineId);
+            return new UnZipOnPlaceCommand(logger, useConsole, processManager, PathWithZips, WithSubFolders, ProcLineId,
+                BuildRetryPipeline(RetryStrategyName, parameters));
         }
 
         StShared.WriteErrorLine("PathWithZips is empty. PathWithZips sis not run", useConsole, logger);

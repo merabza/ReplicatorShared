@@ -58,7 +58,8 @@ public sealed class FilesBackupStep : JobStep
 
         if (par is not null)
         {
-            return new FilesBackupStepCommand(logger, useConsole, par, processManager, this);
+            return new FilesBackupStepCommand(logger, useConsole, par, processManager, this,
+                BuildRetryPipeline(RetryStrategyName, parameters));
         }
 
         StShared.WriteErrorLine("FilesBackupStepParameters does not created", useConsole, logger);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly;
 using SystemTools.BackgroundTasks;
 using ToolsManagement.CompressionManagement;
 
@@ -18,7 +19,8 @@ public sealed class UnZipOnPlaceCommand : ProcessesToolAction
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public UnZipOnPlaceCommand(ILogger logger, bool useConsole, ProcessManager processManager, string pathWithZips,
-        bool withSubFolders, int procLineId) : base(logger, null, null, processManager, "UnZip On Place", procLineId)
+        bool withSubFolders, int procLineId, ResiliencePipeline<bool>? retryPipeline = null) : base(logger, null, null,
+        processManager, "UnZip On Place", procLineId, retryPipeline)
     {
         _logger = logger;
         _useConsole = useConsole;

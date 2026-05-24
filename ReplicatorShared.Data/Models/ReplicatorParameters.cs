@@ -212,8 +212,10 @@ public sealed class ReplicatorParameters : IParametersWithFileStorages, IParamet
 
         if (missingJobStepNames.Count <= 0)
         {
-            // ReSharper disable once using
-            using ProcessManager processManager = processes.GetNewProcessManager();
+            // Lifecycle-ს მართავს IProcesses singleton-ი
+#pragma warning disable CA2000
+            ProcessManager processManager = processes.GetNewProcessManager();
+#pragma warning restore CA2000
             try
             {
                 foreach (ProcessesToolAction? stepToolAction in jobStepNames.Select(name =>

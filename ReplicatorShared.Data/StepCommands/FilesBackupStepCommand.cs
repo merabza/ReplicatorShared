@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibFileParameters.Models;
+using Polly;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
 using ReplicatorShared.Data.ToolActions;
@@ -26,8 +27,8 @@ public sealed class FilesBackupStepCommand : ProcessesToolAction
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public FilesBackupStepCommand(ILogger logger, bool useConsole, FilesBackupStepParameters par,
-        ProcessManager processManager, JobStep jobStep) : base(logger, null, null, processManager, "Files Backup",
-        jobStep.ProcLineId)
+        ProcessManager processManager, JobStep jobStep, ResiliencePipeline<bool>? retryPipeline = null) : base(logger,
+        null, null, processManager, "Files Backup", jobStep.ProcLineId, retryPipeline)
     {
         _logger = logger;
         _useConsole = useConsole;

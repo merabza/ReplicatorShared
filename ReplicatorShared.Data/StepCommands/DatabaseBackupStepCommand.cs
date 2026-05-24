@@ -44,8 +44,9 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public DatabaseBackupStepCommand(bool useConsole, ILogger logger, ProcessManager processManager, JobStep jobStep,
-        DatabaseBackupStepParameters par, string downloadTempExtension) : base(logger, null, null, processManager,
-        "Database Backup", jobStep.ProcLineId)
+        DatabaseBackupStepParameters par, string downloadTempExtension,
+        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, null, null, processManager, "Database Backup",
+        jobStep.ProcLineId, retryPipeline)
     {
         _useConsole = useConsole;
         _logger = logger;

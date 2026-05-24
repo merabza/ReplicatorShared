@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
+using Polly;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
 using ReplicatorShared.Data.ToolActions;
@@ -16,8 +17,10 @@ public sealed class RecompileProceduresStepCommand : MultiDatabaseProcessesToolA
     // ReSharper disable once ConvertToPrimaryConstructor
     public RecompileProceduresStepCommand(ILogger logger, bool useConsole, string procLogFilesFolder,
         ProcessManager processManager, MultiDatabaseProcessStep multiDatabaseProcessStep,
-        MultiDatabaseProcessStepParameters par, int procLineId) : base(logger, useConsole, procLogFilesFolder,
-        "RecompileProcedures", processManager, multiDatabaseProcessStep, par, "Recompile Procedures", procLineId)
+        MultiDatabaseProcessStepParameters par, int procLineId,
+        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, useConsole, procLogFilesFolder,
+        "RecompileProcedures", processManager, multiDatabaseProcessStep, par, "Recompile Procedures", procLineId,
+        retryPipeline)
     {
     }
 

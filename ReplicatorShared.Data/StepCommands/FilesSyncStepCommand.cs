@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly;
 using ReplicatorShared.Data.FolderProcessors;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
@@ -16,8 +17,8 @@ public sealed class FilesSyncStepCommand : ProcessesToolAction
     private readonly FilesSyncStepParameters _par;
 
     public FilesSyncStepCommand(ILogger logger, ProcessManager processManager, JobStep jobStep,
-        FilesSyncStepParameters filesSyncStepParameters) : base(logger, null, null, processManager, "Files Sync",
-        jobStep.ProcLineId)
+        FilesSyncStepParameters filesSyncStepParameters, ResiliencePipeline<bool>? retryPipeline = null) : base(logger,
+        null, null, processManager, "Files Sync", jobStep.ProcLineId, retryPipeline)
     {
         _logger = logger;
         _par = filesSyncStepParameters;

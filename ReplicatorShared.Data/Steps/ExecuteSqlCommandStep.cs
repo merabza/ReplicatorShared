@@ -35,7 +35,8 @@ public sealed class ExecuteSqlCommandStep : JobStep
 
         if (par is not null)
         {
-            return new ExecuteSqlCommandStepCommand(logger, processManager, this, par);
+            return new ExecuteSqlCommandStepCommand(logger, processManager, this, par,
+                BuildRetryPipeline(RetryStrategyName, parameters));
         }
 
         StShared.WriteErrorLine("par does not created", useConsole, logger);

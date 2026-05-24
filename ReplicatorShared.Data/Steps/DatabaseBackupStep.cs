@@ -90,7 +90,7 @@ public sealed class DatabaseBackupStep : JobStep
         if (par is not null)
         {
             return new DatabaseBackupStepCommand(useConsole, logger, processManager, this, par,
-                parameters.DownloadFileTempExtension);
+                parameters.DownloadFileTempExtension, BuildRetryPipeline(RetryStrategyName, parameters));
         }
 
         StShared.WriteErrorLine("par does not created", useConsole, logger);

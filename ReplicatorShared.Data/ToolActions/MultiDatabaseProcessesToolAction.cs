@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DatabaseTools.DbTools.Models;
 using Microsoft.Extensions.Logging;
+using Polly;
 using ReplicatorShared.Data.Models;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
@@ -23,8 +24,9 @@ public /*open*/ class MultiDatabaseProcessesToolAction : ProcessesToolAction
 
     protected MultiDatabaseProcessesToolAction(ILogger logger, bool useConsole, string procLogFilesFolder,
         string stepName, ProcessManager processManager, MultiDatabaseProcessStep multiDatabaseProcessStep,
-        MultiDatabaseProcessStepParameters par, string actionName, int procLineId) : base(logger, null, null,
-        processManager, actionName, procLineId)
+        MultiDatabaseProcessStepParameters par, string actionName, int procLineId,
+        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, null, null, processManager, actionName,
+        procLineId, retryPipeline)
     {
         _logger = logger;
         _useConsole = useConsole;

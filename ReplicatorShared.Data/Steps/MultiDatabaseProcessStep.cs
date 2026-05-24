@@ -4,6 +4,7 @@ using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
+using Polly;
 using ReplicatorShared.Data.Models;
 using ReplicatorShared.Data.StepCommands;
 using ReplicatorShared.Data.StepParameters;
@@ -45,7 +46,8 @@ public sealed class MultiDatabaseProcessStep : JobStep
 
         if (par is not null)
         {
-            return CreateActionClass(ActionType, logger, useConsole, processManager, procLogFilesFolder, par);
+            return CreateActionClass(ActionType, logger, useConsole, processManager, procLogFilesFolder, par,
+                BuildRetryPipeline(RetryStrategyName, parameters));
         }
 
         logger.LogError("Error when creating MultiDatabaseProcessStep parameters");
@@ -53,16 +55,17 @@ public sealed class MultiDatabaseProcessStep : JobStep
     }
 
     private ProcessesToolAction CreateActionClass(EMultiDatabaseActionType actionType, ILogger logger, bool useConsole,
-        ProcessManager processManager, string procLogFilesFolder, MultiDatabaseProcessStepParameters par)
+        ProcessManager processManager, string procLogFilesFolder, MultiDatabaseProcessStepParameters par,
+        ResiliencePipeline<bool>? retryPipeline)
     {
         return actionType switch
         {
             EMultiDatabaseActionType.UpdateStatistics => new UpdateStatisticsStepCommand(logger, useConsole,
-                procLogFilesFolder, processManager, this, par, ProcLineId),
+                procLogFilesFolder, processManager, this, par, ProcLineId, retryPipeline),
             EMultiDatabaseActionType.CheckRepairDataBase => new CheckRepairDatabaseStepCommand(logger, useConsole,
-                procLogFilesFolder, processManager, this, par, ProcLineId),
+                procLogFilesFolder, processManager, this, par, ProcLineId, retryPipeline),
             EMultiDatabaseActionType.RecompileProcedures => new RecompileProceduresStepCommand(logger, useConsole,
-                procLogFilesFolder, processManager, this, par, ProcLineId),
+                procLogFilesFolder, processManager, this, par, ProcLineId, retryPipeline),
             _ => throw new ArgumentOutOfRangeException(nameof(actionType), actionType,
                 $"Unsupported action type: {actionType}")
         };

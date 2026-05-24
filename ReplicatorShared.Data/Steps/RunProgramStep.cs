@@ -21,7 +21,8 @@ public sealed class RunProgramStep : JobStep
 
         if (par is not null)
         {
-            return new RunProgramStepCommand(logger, useConsole, ProcLineId, par);
+            return new RunProgramStepCommand(logger, useConsole, ProcLineId, par,
+                BuildRetryPipeline(RetryStrategyName, parameters));
         }
 
         StShared.WriteErrorLine("parameters does not created, RunProgramStep did not run", useConsole, logger);
