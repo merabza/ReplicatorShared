@@ -29,7 +29,7 @@ public sealed class FilesSyncStepCommand : ProcessesToolAction
         //სანამ რაიმეს გადაწერას დავიწყებთ, დავრწმუნდეთ, რომ მიზნის მხარეს არ არის შემორჩენილი ძველი დროებითი ფაილები
         if (_par.DeleteDestinationFilesSet != null)
         {
-            var deleteTempFiles = new DeleteTempFiles(_par.DestinationFileManager,
+            var deleteTempFiles = new DeleteTempFiles(_logger, _par.DestinationFileManager,
                 [.. _par.DeleteDestinationFilesSet.FolderFileMasks]);
 
             if (!deleteTempFiles.Run())
@@ -55,7 +55,7 @@ public sealed class FilesSyncStepCommand : ProcessesToolAction
         if (_par.ReplacePairsSet != null)
         {
             var changeFilesWithManyDots =
-                new ChangeFilesWithRestrictPatterns(_par.SourceFileManager, _par.ReplacePairsSet.PairsDict);
+                new ChangeFilesWithRestrictPatterns(_logger, _par.SourceFileManager, _par.ReplacePairsSet.PairsDict);
             if (!changeFilesWithManyDots.Run())
             {
                 return ValueTask.FromResult(false);

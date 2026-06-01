@@ -33,7 +33,7 @@ public sealed class FilesMoveStepCommand : ProcessesToolAction
         //სანამ რაიმეს გადაწერას დავიწყებთ, დავრწმუნდეთ, რომ მიზნის მხარეს არ არის შემორჩენილი ველი დროებითი ფაილები
         if (_par.DeleteDestinationFilesSet != null)
         {
-            var deleteTempFiles = new DeleteTempFiles(_par.DestinationFileManager,
+            var deleteTempFiles = new DeleteTempFiles(_logger, _par.DestinationFileManager,
                 [.. _par.DeleteDestinationFilesSet.FolderFileMasks]);
 
             if (!deleteTempFiles.Run())
@@ -59,7 +59,7 @@ public sealed class FilesMoveStepCommand : ProcessesToolAction
         if (_par.ReplacePairsSet != null)
         {
             var changeFilesWithManyDots =
-                new ChangeFilesWithRestrictPatterns(_par.SourceFileManager, _par.ReplacePairsSet.PairsDict);
+                new ChangeFilesWithRestrictPatterns(_logger, _par.SourceFileManager, _par.ReplacePairsSet.PairsDict);
             if (!changeFilesWithManyDots.Run())
             {
                 return ValueTask.FromResult(false);
@@ -113,20 +113,20 @@ public sealed class FilesMoveStepCommand : ProcessesToolAction
             return ValueTask.FromResult(true);
         }
 
-        var duplicateFilesFinder = new DuplicateFilesFinder(_par.DestinationFileManager);
+        var duplicateFilesFinder = new DuplicateFilesFinder(_logger, _par.DestinationFileManager);
         if (!duplicateFilesFinder.Run())
         {
             return ValueTask.FromResult(false);
         }
 
-        var multiDuplicatesFinder = new MultiDuplicatesFinder(_useConsole, duplicateFilesFinder.FileList);
+        var multiDuplicatesFinder = new MultiDuplicatesFinder(_logger, _useConsole, duplicateFilesFinder.FileList);
         if (!multiDuplicatesFinder.Run())
         {
             return ValueTask.FromResult(false);
         }
 
         var duplicateFilesRemover =
-            new DuplicateFilesRemover(_useConsole, multiDuplicatesFinder.FileList, _par.PriorityPoints);
+            new DuplicateFilesRemover(_logger, _useConsole, multiDuplicatesFinder.FileList, _par.PriorityPoints);
 
         if (!duplicateFilesRemover.Run())
         {

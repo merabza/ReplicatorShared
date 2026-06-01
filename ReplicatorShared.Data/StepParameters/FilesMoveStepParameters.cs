@@ -159,7 +159,7 @@ public sealed class FilesMoveStepParameters
             return null;
         }
 
-        Console.WriteLine($"Destination is {destinationFileStorage.FileStoragePath}");
+        logger.LogInformation("Destination is {DestinationFileStoragePath}", destinationFileStorage.FileStoragePath);
 
         FileManager? destinationFileManager = destinationIsLocal.Value
             ? FileManagersFactory.CreateFileManager(useConsole, logger, destinationFileStorage.FileStoragePath)

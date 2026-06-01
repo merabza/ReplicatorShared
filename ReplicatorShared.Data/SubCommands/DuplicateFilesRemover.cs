@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using ReplicatorShared.Data.Models;
 using SystemTools.SystemToolsShared;
 
@@ -10,11 +11,13 @@ public sealed class DuplicateFilesRemover
     private readonly FileListModel _fileList;
 
     private readonly List<string> _priorityList;
+    private readonly ILogger _logger;
     private readonly bool _useConsole;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DuplicateFilesRemover(bool useConsole, FileListModel fileList, List<string> priorityList)
+    public DuplicateFilesRemover(ILogger logger, bool useConsole, FileListModel fileList, List<string> priorityList)
     {
+        _logger = logger;
         _useConsole = useConsole;
         _fileList = fileList;
         _priorityList = priorityList;
@@ -22,15 +25,15 @@ public sealed class DuplicateFilesRemover
 
     internal bool Run()
     {
-        Console.WriteLine("Delete duplicate Files");
+        StShared.ConsoleWriteInformationLine(_logger, _useConsole, "Delete duplicate Files");
 
-        StShared.ConsoleWriteInformationLine(null, _useConsole, "Remove Duplicate Files");
+        StShared.ConsoleWriteInformationLine(_logger, _useConsole, "Remove Duplicate Files");
         foreach (KeyValuePair<string, DuplicateFilesStorage> kvp in _fileList.DuplicateFilesStorage)
         {
             kvp.Value.RemoveDuplicates(_priorityList);
         }
 
-        StShared.ConsoleWriteInformationLine(null, _useConsole, "Finish");
+        StShared.ConsoleWriteInformationLine(_logger, _useConsole, "Finish");
 
         return true;
     }

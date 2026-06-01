@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using ConnectionTools.ConnectTools;
+using Microsoft.Extensions.Logging;
 using ReplicatorShared.Data.Models;
 using SystemTools.SystemToolsShared;
 using ToolsManagement.FileManagersMain;
@@ -15,13 +15,16 @@ namespace ReplicatorShared.Data.FolderProcessors;
 
 public sealed class DuplicateFilesFinder : FolderProcessor
 {
+    private readonly ILogger _logger;
+
     //private readonly ConsoleFormatter _consoleFormatter;
     // The cryptographic service provider.
     private readonly SHA256 _sha256 = SHA256.Create();
 
-    public DuplicateFilesFinder(FileManager fileManager) : base("DuplicatesRemover", "Find and remove duplicate files",
-        fileManager, null, false, null, true, true)
+    public DuplicateFilesFinder(ILogger logger, FileManager fileManager) : base("DuplicatesRemover",
+        "Find and remove duplicate files", fileManager, null, false, null, true, true)
     {
+        _logger = logger;
     }
 
     public FileListModel FileList { get; } = new();
@@ -33,7 +36,7 @@ public sealed class DuplicateFilesFinder : FolderProcessor
             return false;
         }
 
-        Console.WriteLine("Find Files");
+        _logger.LogInformation("Find Files");
         return true;
     }
 
@@ -46,7 +49,7 @@ public sealed class DuplicateFilesFinder : FolderProcessor
 
         string fileFullName = dFileManager.GetPath(afterRootPath, file.FileName);
 
-        Console.WriteLine($"Analyze file {fileFullName}");
+        _logger.LogInformation("Analyze file {FileFullName}", fileFullName);
 
         var fileModel = new FileModel(fileFullName, file.FileLength);
         FileList.Files.Add(fileModel);
@@ -107,7 +110,7 @@ public sealed class DuplicateFilesFinder : FolderProcessor
     private byte[] GetHashSha256(string fileName)
     {
         //_consoleFormatter.WriteInSameLine($"Get Hash Sha256 for file {fileName}");
-        Console.WriteLine($"Get Hash Sha256 for file {fileName}");
+        _logger.LogInformation("Get Hash Sha256 for file {FileName}", fileName);
         // ReSharper disable once using
         using FileStream stream = File.OpenRead(fileName);
         return _sha256.ComputeHash(stream);

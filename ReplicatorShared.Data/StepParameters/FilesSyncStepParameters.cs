@@ -147,7 +147,7 @@ public sealed class FilesSyncStepParameters
             return null;
         }
 
-        Console.WriteLine($"Destination is {destinationFileStorage.FileStoragePath}");
+        logger.LogInformation("Destination is {DestinationFileStoragePath}", destinationFileStorage.FileStoragePath);
 
         FileManager? destinationFileManager =
             //შევქმნათ ლოკალური მიმღები ფაილ მენეჯერი

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ConnectionTools.ConnectTools;
+using Microsoft.Extensions.Logging;
 using ToolsManagement.FileManagersMain;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -11,12 +11,14 @@ namespace ReplicatorShared.Data.FolderProcessors;
 
 public sealed class ChangeFilesWithRestrictPatterns : FolderProcessor
 {
+    private readonly ILogger _logger;
     private readonly Dictionary<string, string> _replaceSet;
 
-    public ChangeFilesWithRestrictPatterns(FileManager destinationFileManager, Dictionary<string, string> replaceSet) :
-        base("Restrict Patterns", "Change Files With Restrict Patterns", destinationFileManager, null, false, null,
-            true, true)
+    public ChangeFilesWithRestrictPatterns(ILogger logger, FileManager destinationFileManager,
+        Dictionary<string, string> replaceSet) : base("Restrict Patterns", "Change Files With Restrict Patterns",
+        destinationFileManager, null, false, null, true, true)
     {
+        _logger = logger;
         _replaceSet = replaceSet;
     }
 
@@ -27,13 +29,13 @@ public sealed class ChangeFilesWithRestrictPatterns : FolderProcessor
             return true;
         }
 
-        Console.WriteLine("Replace Set patterns not specified");
+        _logger.LogError("Replace Set patterns not specified");
         return false;
     }
 
     protected override bool ProcessOneFile(string? afterRootPath, MyFileInfo file)
     {
-        string? newFileName = file.FileName;
+        string newFileName = file.FileName;
         bool replaced;
         do
         {
@@ -56,8 +58,8 @@ public sealed class ChangeFilesWithRestrictPatterns : FolderProcessor
 
         //შევუცვალოთ სახელი ფაილს fileName დან newFileName-კენ
 
-        string? extension = Path.GetExtension(newFileName);
-        string? fileNameWithoutExtension = Path.GetFileNameWithoutExtension(newFileName);
+        string extension = Path.GetExtension(newFileName);
+        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(newFileName);
 
         int i = 0;
         while (FileManager.FileExists(afterRootPath, fileNameWithoutExtension.GetNewFileName(i, extension)))

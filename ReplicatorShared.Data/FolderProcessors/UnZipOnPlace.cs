@@ -44,7 +44,7 @@ public sealed class UnZipOnPlace : FolderProcessor
 
         var archiver = new ZipClassArchiver(_logger, _useConsole, ".zip");
 
-        Console.WriteLine($"Unzip {zipFileFullName}");
+        _logger.LogInformation("Unzip {ZipFileFullName}", zipFileFullName);
 
         if (!archiver.ArchiveToPath(zipFileFullName, newDirFullName))
         {

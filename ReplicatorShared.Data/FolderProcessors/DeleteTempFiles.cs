@@ -1,5 +1,5 @@
-﻿using System;
-using ConnectionTools.ConnectTools;
+﻿using ConnectionTools.ConnectTools;
+using Microsoft.Extensions.Logging;
 using ToolsManagement.FileManagersMain;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -8,11 +8,13 @@ namespace ReplicatorShared.Data.FolderProcessors;
 
 public sealed class DeleteTempFiles : FolderProcessor
 {
+    private readonly ILogger _logger;
     private readonly string[] _patterns;
 
-    public DeleteTempFiles(FileManager destinationFileManager, string[] patterns) : base("Temp files",
+    public DeleteTempFiles(ILogger logger, FileManager destinationFileManager, string[] patterns) : base("Temp files",
         "Delete Temp files", destinationFileManager, null, true, null, true, true)
     {
+        _logger = logger;
         _patterns = patterns;
     }
 
@@ -23,7 +25,7 @@ public sealed class DeleteTempFiles : FolderProcessor
             return true;
         }
 
-        Console.WriteLine("Delete Files patterns not specified");
+        _logger.LogError("Delete Files patterns not specified");
         return false;
     }
 
