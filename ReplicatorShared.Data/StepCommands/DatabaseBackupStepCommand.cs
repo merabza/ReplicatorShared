@@ -33,7 +33,7 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
                 Delay = TimeSpan.FromSeconds(30),
                 MaxRetryAttempts = 2,
                 BackoffType = DelayBackoffType.Exponential,
-                UseJitter = true,
+                UseJitter = true
             }).Build();
 
     private readonly string _downloadTempExtension;

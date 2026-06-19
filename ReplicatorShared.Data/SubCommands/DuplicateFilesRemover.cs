@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using ReplicatorShared.Data.Models;
 using SystemTools.SystemToolsShared;
@@ -9,9 +8,9 @@ namespace ReplicatorShared.Data.SubCommands;
 public sealed class DuplicateFilesRemover
 {
     private readonly FileListModel _fileList;
+    private readonly ILogger _logger;
 
     private readonly List<string> _priorityList;
-    private readonly ILogger _logger;
     private readonly bool _useConsole;
 
     // ReSharper disable once ConvertToPrimaryConstructor

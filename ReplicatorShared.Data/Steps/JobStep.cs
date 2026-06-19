@@ -64,13 +64,14 @@ public /*open*/ class JobStep : ItemData
 
         return new ResiliencePipelineBuilder<bool>().AddRetry(new RetryStrategyOptions<bool>
         {
-            ShouldHandle = new PredicateBuilder<bool>().HandleResult(r => !r)
-                .Handle<Exception>(e => e is not OperationCanceledException),
+            ShouldHandle =
+                new PredicateBuilder<bool>().HandleResult(r => !r)
+                    .Handle<Exception>(e => e is not OperationCanceledException),
             MaxRetryAttempts = rsp.MaxRetryAttempts,
             BackoffType = rsp.BackoffType,
             UseJitter = rsp.UseJitter,
             Delay = rsp.Delay,
-            MaxDelay = rsp.MaxDelay,
+            MaxDelay = rsp.MaxDelay
         }).Build();
     }
 }

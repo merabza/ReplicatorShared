@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ParametersManagement.LibFileParameters.Models;
 using ReplicatorShared.Data.Models;
 using ReplicatorShared.Data.StepCommands;

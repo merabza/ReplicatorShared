@@ -17,10 +17,9 @@ public sealed class UpdateStatisticsStepCommand : MultiDatabaseProcessesToolActi
     // ReSharper disable once ConvertToPrimaryConstructor
     public UpdateStatisticsStepCommand(ILogger logger, bool useConsole, string procLogFilesFolder,
         ProcessManager processManager, MultiDatabaseProcessStep multiDatabaseProcessStep,
-        MultiDatabaseProcessStepParameters par, int procLineId,
-        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, useConsole, procLogFilesFolder,
-        "UpdateStatistics", processManager, multiDatabaseProcessStep, par, "Update Statistics", procLineId,
-        retryPipeline)
+        MultiDatabaseProcessStepParameters par, int procLineId, ResiliencePipeline<bool>? retryPipeline = null) : base(
+        logger, useConsole, procLogFilesFolder, "UpdateStatistics", processManager, multiDatabaseProcessStep, par,
+        "Update Statistics", procLineId, retryPipeline)
     {
     }
 

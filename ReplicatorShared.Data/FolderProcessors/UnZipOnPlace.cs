@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using ConnectionTools.ConnectTools;
 using Microsoft.Extensions.Logging;
 using ToolsManagement.CompressionManagement;

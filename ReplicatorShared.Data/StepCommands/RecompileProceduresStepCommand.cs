@@ -17,10 +17,9 @@ public sealed class RecompileProceduresStepCommand : MultiDatabaseProcessesToolA
     // ReSharper disable once ConvertToPrimaryConstructor
     public RecompileProceduresStepCommand(ILogger logger, bool useConsole, string procLogFilesFolder,
         ProcessManager processManager, MultiDatabaseProcessStep multiDatabaseProcessStep,
-        MultiDatabaseProcessStepParameters par, int procLineId,
-        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, useConsole, procLogFilesFolder,
-        "RecompileProcedures", processManager, multiDatabaseProcessStep, par, "Recompile Procedures", procLineId,
-        retryPipeline)
+        MultiDatabaseProcessStepParameters par, int procLineId, ResiliencePipeline<bool>? retryPipeline = null) : base(
+        logger, useConsole, procLogFilesFolder, "RecompileProcedures", processManager, multiDatabaseProcessStep, par,
+        "Recompile Procedures", procLineId, retryPipeline)
     {
     }
 

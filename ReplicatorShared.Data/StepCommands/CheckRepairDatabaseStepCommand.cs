@@ -17,10 +17,9 @@ public sealed class CheckRepairDatabaseStepCommand : MultiDatabaseProcessesToolA
     // ReSharper disable once ConvertToPrimaryConstructor
     public CheckRepairDatabaseStepCommand(ILogger logger, bool useConsole, string procLogFilesFolder,
         ProcessManager processManager, MultiDatabaseProcessStep multiDatabaseProcessStep,
-        MultiDatabaseProcessStepParameters par, int procLineId,
-        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, useConsole, procLogFilesFolder,
-        "CheckRepairDataBase", processManager, multiDatabaseProcessStep, par, "Check Repair DataBase", procLineId,
-        retryPipeline)
+        MultiDatabaseProcessStepParameters par, int procLineId, ResiliencePipeline<bool>? retryPipeline = null) : base(
+        logger, useConsole, procLogFilesFolder, "CheckRepairDataBase", processManager, multiDatabaseProcessStep, par,
+        "Check Repair DataBase", procLineId, retryPipeline)
     {
     }
 
