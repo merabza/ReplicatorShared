@@ -61,7 +61,8 @@ public sealed class DatabaseBackupStep : JobStep
     //ატვირთვის პროცესის ხაზის იდენტიფიკატორი
     public int UploadProcLineId { get; set; }
 
-    public string? UploadSmartSchemaName
+    public string?
+        UploadSmartSchemaName
     {
         get;
         set;

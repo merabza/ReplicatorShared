@@ -39,5 +39,4 @@
     </Folder>
     <Project Path="ReplicatorShared.Data/ReplicatorShared.Data.csproj" />
     <Project Path="ReplicatorShared.Tools/ReplicatorShared.Tools.csproj" />
-    <Project Path="ReplicatorShared/ReplicatorShared.csproj" />
 </Solution>

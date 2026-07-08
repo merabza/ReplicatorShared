@@ -13,20 +13,23 @@ public sealed class JobSchedule : ItemData
 
     public bool Enabled { get; set; } // მიუთითებს დასაშვებია თუ არა ამ შედულეს გამოყენება.
 
-    public EScheduleType ScheduleType
+    public EScheduleType
+        ScheduleType
     {
         get;
         set;
     } //შედულეს ტიპი შეიძლება იყოს: პროგრამის გაშვებისას (AtStart), ერთხელ მითითებულ დროს (Once), ყოველდღიურად (Daily)
     //მომავალში შეიძლება დაემატოს: ყოველკვირეული (Weekly), ყოველთვიური (Monthly), როცა პროცესორი დაკავებული არ არის (WhenCpuIdle)
 
-    public DateTime RunOnceDateTime
+    public DateTime
+        RunOnceDateTime
     {
         get;
         set;
     } //Once თუ შედულეს ტიპი არჩეულია Once, მაშინ ეს თარიღი და დრო მიუთითებს როდის უნდა გაეშვას იმ ერთადერთხელ პროცესი.
 
-    public int FreqInterval
+    public int
+        FreqInterval
     {
         get;
         set;
@@ -41,7 +44,8 @@ public sealed class JobSchedule : ItemData
     //public DateTime ActiveStartDate { get; set; } //
     //public DateTime ActiveEndDate { get; set; } //Daily
 
-    public EDailyFrequency DailyFrequencyType
+    public EDailyFrequency
+        DailyFrequencyType
     {
         get;
         set;
@@ -52,14 +56,16 @@ public sealed class JobSchedule : ItemData
     //თუ არჩეულია დღეში რამდენიმე გაშვება, მაშინ ეს დრო მიუთითებს რომელი დროიდან იწყება პირველი პროცესი.
     public TimeSpan ActiveStartDayTime { get; set; }
 
-    public TimeSpan ActiveEndDayTime
+    public TimeSpan
+        ActiveEndDayTime
     {
         get;
         set;
     } //Daily თუ მითითებულია ყოველდღიური შედულე და არჩეულია დღეში რამდენიმე გაშვება. მაშინ აქ ეთითება დღის რომელ დრომდე უნდა გაეშვას პროცესი
 
     //თუ არჩეულია დღეში რამდენიმე გაშვება,
-    public EEveryMeasure FreqSubDayType
+    public EEveryMeasure
+        FreqSubDayType
     {
         get;
         set;
