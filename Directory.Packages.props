@@ -1,12 +1,15 @@
 <Project>
-    <PropertyGroup>
-        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.27.0.140913" />
-        <PackageVersion Include="coverlet.collector" Version="8.0.1" />
-        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
-        <PackageVersion Include="xunit" Version="2.9.3" />
-        <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-    </ItemGroup>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.27.0.140913" />
+    <PackageVersion Include="coverlet.collector" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+    <PackageVersion Include="ToolsManagement.CompressionManagement" Version="1.0.9686.35962" />
+    <PackageVersion Include="ToolsManagement.DatabasesManagement" Version="1.0.9686.35962" />
+    <PackageVersion Include="ToolsManagement.FileManagersMain" Version="1.0.9686.35962" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+  </ItemGroup>
 </Project>
