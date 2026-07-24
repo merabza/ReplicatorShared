@@ -101,8 +101,10 @@ public sealed class DuplicateFilesStorage
 
             if (saveFile == null)
             {
-                List<FileModel> orderedAllFiles = duplicateFiles.Files.OrderBy(o => o.FileFullName.Length)
-                    .ThenBy(o => o.FileFullName).ToList();
+                List<FileModel> orderedAllFiles =
+                [
+                    .. duplicateFiles.Files.OrderBy(o => o.FileFullName.Length).ThenBy(o => o.FileFullName)
+                ];
                 saveFile = orderedAllFiles[0];
             }
 

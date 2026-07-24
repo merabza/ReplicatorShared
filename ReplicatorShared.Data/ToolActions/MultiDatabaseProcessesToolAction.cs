@@ -48,7 +48,7 @@ public /*open*/ class MultiDatabaseProcessesToolAction : ProcessesToolAction
             var databasesListCreator =
                 new DatabasesListCreator(_multiDatabaseProcessStep.DatabaseSet, _par.AgentClient);
             List<DatabaseInfoModel> dbList = await databasesListCreator.LoadDatabaseNames(cancellationToken);
-            databaseNames = dbList.Select(s => s.Name).ToList();
+            databaseNames = [.. dbList.Select(s => s.Name)];
         }
 
         return databaseNames;

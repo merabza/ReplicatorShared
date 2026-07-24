@@ -97,7 +97,7 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
         //თუ ასეთი აღმოჩნდა, გამოვიტანოთ ინფორმაცია ამის შესახებ
         if (_par.DatabaseSet == EDatabaseSet.DatabasesBySelection)
         {
-            List<string> missingDatabaseNames = _par.DatabaseNames.Except(databaseInfos.Select(s => s.Name)).ToList();
+            List<string> missingDatabaseNames = [.. _par.DatabaseNames.Except(databaseInfos.Select(s => s.Name))];
 
             if (missingDatabaseNames.Count > 0)
             {
@@ -190,10 +190,10 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
         //დადგინდეს დასაბექაპებელი ბაზების სია
         List<string> databaseNames = databaseSet switch
         {
-            EDatabaseSet.AllDatabases => dbInfos.Select(s => s.Name).ToList(),
-            EDatabaseSet.SystemDatabases => dbInfos.Where(w => w.IsSystemDatabase).Select(s => s.Name).ToList(),
-            EDatabaseSet.AllUserDatabases => dbInfos.Where(w => !w.IsSystemDatabase).Select(s => s.Name).ToList(),
-            EDatabaseSet.DatabasesBySelection => dbInfos.Select(s => s.Name).Intersect(_par.DatabaseNames).ToList(),
+            EDatabaseSet.AllDatabases => [.. dbInfos.Select(s => s.Name)],
+            EDatabaseSet.SystemDatabases => [.. dbInfos.Where(w => w.IsSystemDatabase).Select(s => s.Name)],
+            EDatabaseSet.AllUserDatabases => [.. dbInfos.Where(w => !w.IsSystemDatabase).Select(s => s.Name)],
+            EDatabaseSet.DatabasesBySelection => [.. dbInfos.Select(s => s.Name).Intersect(_par.DatabaseNames)],
             _ => throw new ArgumentOutOfRangeException(nameof(databaseSet), databaseSet, "Invalid database set value.")
         };
         return databaseNames;

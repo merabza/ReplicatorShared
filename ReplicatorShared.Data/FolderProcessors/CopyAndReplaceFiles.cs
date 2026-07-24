@@ -67,7 +67,7 @@ public sealed class CopyAndReplaceFiles : CopyMoveFiles
             return value;
         }
 
-        value = DestinationFileManager.GetFilesWithInfo(afterRootPath, null).ToList();
+        value = [.. DestinationFileManager.GetFilesWithInfo(afterRootPath, null)];
         _checkedFolderFiles.Add(afterRootPath, value);
 
         return value;

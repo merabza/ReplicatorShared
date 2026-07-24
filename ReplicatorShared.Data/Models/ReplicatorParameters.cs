@@ -72,13 +72,16 @@ public sealed class ReplicatorParameters : IParametersWithFileStorages, IParamet
     public bool CheckBeforeSave()
     {
         Dictionary<string, JobStep> steps = GetSteps();
-        List<string> jobStepNames = JobsBySchedules.Select(s => s.JobStepName).ToList();
+        List<string> jobStepNames = [.. JobsBySchedules.Select(s => s.JobStepName)];
 
-        List<string> missingJobStepNames = jobStepNames.Except(steps.Keys).ToList();
+        List<string> missingJobStepNames = [.. jobStepNames.Except(steps.Keys)];
 
-        List<JobStepBySchedule> jb = missingJobStepNames
-            .Select(missingJobStepName => JobsBySchedules.Where(x => x.JobStepName == missingJobStepName))
-            .SelectMany(jbs => jbs).ToList();
+        List<JobStepBySchedule> jb =
+        [
+            .. missingJobStepNames
+                .Select(missingJobStepName => JobsBySchedules.Where(x => x.JobStepName == missingJobStepName))
+                .SelectMany(jbs => jbs)
+        ];
         foreach (JobStepBySchedule j in jb)
         {
             JobsBySchedules.Remove(j);
@@ -205,10 +208,10 @@ public sealed class ReplicatorParameters : IParametersWithFileStorages, IParamet
         //თუ აქ მოვედით შედულეს ბარიერი გავლილია, ან პირდაპირ არის მოთხოვნილი ამ შედულეს შესაბამისი ჯობების გაშევბა
         //შედულეს ბარიერის რეალიზება უნდა მოხდეს ბექპროცესის ტაიმერში
         Dictionary<string, JobStep> steps = GetSteps();
-        List<string> jobStepNames = JobsBySchedules.Where(s => s.ScheduleName == scheduleName)
-            .OrderBy(o => o.SequentialNumber).Select(s => s.JobStepName).ToList();
+        List<string> jobStepNames = [.. JobsBySchedules.Where(s => s.ScheduleName == scheduleName)
+            .OrderBy(o => o.SequentialNumber).Select(s => s.JobStepName)];
 
-        List<string> missingJobStepNames = jobStepNames.Except(steps.Keys).ToList();
+        List<string> missingJobStepNames = [.. jobStepNames.Except(steps.Keys)];
 
         if (missingJobStepNames.Count <= 0)
         {

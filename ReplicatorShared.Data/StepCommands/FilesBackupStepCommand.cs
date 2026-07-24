@@ -55,7 +55,7 @@ public sealed class FilesBackupStepCommand : ProcessesToolAction
 
         if (!_par.BackupSeparately)
         {
-            return await ExecuteBackup(_par.MaskName, _par.BackupFolderPaths.Select(s => s.Value).ToArray(),
+            return await ExecuteBackup(_par.MaskName, [.. _par.BackupFolderPaths.Select(s => s.Value)],
                 _par.Archiver, _par.ExcludeSet, _par.UploadFileStorage, cancellationToken);
         }
 

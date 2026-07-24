@@ -36,9 +36,12 @@ public sealed class DatabasesListCreator
 
         (bool sysBaseDoesMatter, bool checkSysBase) = GetDbSetParams(_databaseSet);
 
-        return databaseInfos.Where(w =>
-            (!sysBaseDoesMatter || w.IsSystemDatabase == checkSysBase) &&
-            (w.RecoveryModel != EDatabaseRecoveryModel.Simple || _backupType != EBackupType.TrLog)).ToList();
+        return
+        [
+            .. databaseInfos.Where(w =>
+                (!sysBaseDoesMatter || w.IsSystemDatabase == checkSysBase) &&
+                (w.RecoveryModel != EDatabaseRecoveryModel.Simple || _backupType != EBackupType.TrLog))
+        ];
     }
 
     private static (bool, bool) GetDbSetParams(EDatabaseSet databaseSet)
