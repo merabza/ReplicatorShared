@@ -32,6 +32,11 @@ public sealed class DatabasesListCreator
     {
         OneOf<List<DatabaseInfoModel>, Error[]> getDatabaseNamesResult =
             await _agentClient.GetDatabaseNames(cancellationToken);
+        if (getDatabaseNamesResult.IsT1)
+        {
+            return [];
+        }
+
         List<DatabaseInfoModel>? databaseInfos = getDatabaseNamesResult.AsT0;
 
         (bool sysBaseDoesMatter, bool checkSysBase) = GetDbSetParams(_databaseSet);
