@@ -26,14 +26,14 @@ public sealed class CheckRepairDatabaseStepCommand : MultiDatabaseProcessesToolA
     protected override async Task<bool> RunOneDatabaseAction(IDatabaseManager agentClient, string databaseName,
         CancellationToken cancellationToken = default)
     {
-        Option<Error[]> checkRepairDatabaseResult =
+        Option<ErrorOmd[]> checkRepairDatabaseResult =
             await agentClient.CheckRepairDatabase(databaseName, cancellationToken);
         if (!checkRepairDatabaseResult.IsSome)
         {
             return true;
         }
 
-        Error.PrintErrorsOnConsole((Error[])checkRepairDatabaseResult);
+        ErrorOmd.PrintErrorsOnConsole((ErrorOmd[])checkRepairDatabaseResult);
         return false;
     }
 }

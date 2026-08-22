@@ -50,7 +50,7 @@ public sealed class MultiDatabaseProcessStep : JobStep
                 BuildRetryPipeline(RetryStrategyName, parameters));
         }
 
-        logger.LogError("Error when creating MultiDatabaseProcessStep parameters");
+        logger.LogError("ErrorOmd when creating MultiDatabaseProcessStep parameters");
         return null;
     }
 

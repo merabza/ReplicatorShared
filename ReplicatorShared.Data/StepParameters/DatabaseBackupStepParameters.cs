@@ -83,13 +83,13 @@ public sealed class DatabaseBackupStepParameters
             return null;
         }
 
-        OneOf<IDatabaseManager, Error[]> createDatabaseManagerResult = DatabaseManagersFactory
+        OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult = DatabaseManagersFactory
             .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
                 null, httpClientFactory, null, null, CancellationToken.None).Result;
 
         if (createDatabaseManagerResult.IsT1)
         {
-            Error.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+            ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
         }
 
         if (databaseBackupParameters is null)

@@ -30,7 +30,7 @@ public sealed class DatabasesListCreator
 
     public async Task<List<DatabaseInfoModel>> LoadDatabaseNames(CancellationToken cancellationToken = default)
     {
-        OneOf<List<DatabaseInfoModel>, Error[]> getDatabaseNamesResult =
+        OneOf<List<DatabaseInfoModel>, ErrorOmd[]> getDatabaseNamesResult =
             await _agentClient.GetDatabaseNames(cancellationToken);
         if (getDatabaseNamesResult.IsT1)
         {

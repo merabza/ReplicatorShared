@@ -26,13 +26,13 @@ public sealed class UpdateStatisticsStepCommand : MultiDatabaseProcessesToolActi
     protected override async Task<bool> RunOneDatabaseAction(IDatabaseManager agentClient, string databaseName,
         CancellationToken cancellationToken = default)
     {
-        Option<Error[]> updateStatisticsResult = await agentClient.UpdateStatistics(databaseName, cancellationToken);
+        Option<ErrorOmd[]> updateStatisticsResult = await agentClient.UpdateStatistics(databaseName, cancellationToken);
         if (!updateStatisticsResult.IsSome)
         {
             return true;
         }
 
-        Error.PrintErrorsOnConsole((Error[])updateStatisticsResult);
+        ErrorOmd.PrintErrorsOnConsole((ErrorOmd[])updateStatisticsResult);
         return false;
     }
 }

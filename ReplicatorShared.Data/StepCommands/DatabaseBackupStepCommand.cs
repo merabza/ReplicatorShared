@@ -23,12 +23,12 @@ namespace ReplicatorShared.Data.StepCommands;
 
 public sealed class DatabaseBackupStepCommand : ProcessesToolAction
 {
-    private static readonly ResiliencePipeline<OneOf<BackupFileParameters, Error[]>> Pipeline =
-        new ResiliencePipelineBuilder<OneOf<BackupFileParameters, Error[]>>().AddRetry(
-            new RetryStrategyOptions<OneOf<BackupFileParameters, Error[]>>
+    private static readonly ResiliencePipeline<OneOf<BackupFileParameters, ErrorOmd[]>> Pipeline =
+        new ResiliencePipelineBuilder<OneOf<BackupFileParameters, ErrorOmd[]>>().AddRetry(
+            new RetryStrategyOptions<OneOf<BackupFileParameters, ErrorOmd[]>>
             {
                 ShouldHandle =
-                    new PredicateBuilder<OneOf<BackupFileParameters, Error[]>>()
+                    new PredicateBuilder<OneOf<BackupFileParameters, ErrorOmd[]>>()
                         .HandleResult(result => result.IsT1),
                 Delay = TimeSpan.FromSeconds(30),
                 MaxRetryAttempts = 2,
@@ -78,11 +78,11 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
         }
 
         //დადგინდეს არსებული ბაზების სია
-        OneOf<List<DatabaseInfoModel>, Error[]> getDatabaseNamesResult =
+        OneOf<List<DatabaseInfoModel>, ErrorOmd[]> getDatabaseNamesResult =
             await _par.AgentClient.GetDatabaseNames(cancellationToken);
         if (getDatabaseNamesResult.IsT1)
         {
-            Error.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+            ErrorOmd.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
             return false;
         }
 
@@ -134,14 +134,14 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
                 _logger.LogInformation("Backup database {DatabaseName}...", databaseName);
             }
 
-            OneOf<BackupFileParameters, Error[]> createBackupResult =
+            OneOf<BackupFileParameters, ErrorOmd[]> createBackupResult =
                 await Pipeline.ExecuteAsync(
                     async ct => await _par.AgentClient.CreateBackup(_par.DbBackupParameters, databaseName,
                         _par.DbServerFoldersSetName, ct), cancellationToken);
 
             if (createBackupResult.IsT1)
             {
-                Error.PrintErrorsOnConsole(createBackupResult.AsT1);
+                ErrorOmd.PrintErrorsOnConsole(createBackupResult.AsT1);
                 continue;
             }
 
