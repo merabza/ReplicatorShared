@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using DatabaseTools.DbTools;
 using DatabaseTools.DbTools.Models;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using Polly;
 using Polly.Retry;
 using ReplicatorShared.Data.Models;
@@ -15,21 +14,21 @@ using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
 using ReplicatorShared.Data.ToolActions;
 using SystemTools.BackgroundTasks;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 using WebAgentContracts.WebAgentDatabasesApiContracts.V1.Responses;
 
 namespace ReplicatorShared.Data.StepCommands;
 
 public sealed class DatabaseBackupStepCommand : ProcessesToolAction
 {
-    private static readonly ResiliencePipeline<OneOf<BackupFileParameters, ErrorOmd[]>> Pipeline =
-        new ResiliencePipelineBuilder<OneOf<BackupFileParameters, ErrorOmd[]>>().AddRetry(
-            new RetryStrategyOptions<OneOf<BackupFileParameters, ErrorOmd[]>>
+    private static readonly ResiliencePipeline<Result<BackupFileParameters>> Pipeline =
+        new ResiliencePipelineBuilder<Result<BackupFileParameters>>().AddRetry(
+            new RetryStrategyOptions<Result<BackupFileParameters>>
             {
                 ShouldHandle =
-                    new PredicateBuilder<OneOf<BackupFileParameters, ErrorOmd[]>>()
-                        .HandleResult(result => result.IsT1),
+                    new PredicateBuilder<Result<BackupFileParameters>>()
+                        .HandleResult(result => result.IsFailure),
                 Delay = TimeSpan.FromSeconds(30),
                 MaxRetryAttempts = 2,
                 BackoffType = DelayBackoffType.Exponential,
@@ -78,15 +77,15 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
         }
 
         //დადგინდეს არსებული ბაზების სია
-        OneOf<List<DatabaseInfoModel>, ErrorOmd[]> getDatabaseNamesResult =
+        Result<List<DatabaseInfoModel>> getDatabaseNamesResult =
             await _par.AgentClient.GetDatabaseNames(cancellationToken);
-        if (getDatabaseNamesResult.IsT1)
+        if (getDatabaseNamesResult.IsFailure)
         {
-            ErrorOmd.PrintErrorsOnConsole(getDatabaseNamesResult.AsT1);
+            getDatabaseNamesResult.Error.PrintErrorsOnConsole();
             return false;
         }
 
-        List<DatabaseInfoModel>? databaseInfos = getDatabaseNamesResult.AsT0;
+        List<DatabaseInfoModel> databaseInfos = getDatabaseNamesResult.Value;
 
         IEnumerable<DatabaseInfoModel> dbInfos = databaseInfos.Where(w =>
             w.RecoveryModel != EDatabaseRecoveryModel.Simple || _par.BackupType != EBackupType.TrLog);
@@ -134,25 +133,18 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
                 _logger.LogInformation("Backup database {DatabaseName}...", databaseName);
             }
 
-            OneOf<BackupFileParameters, ErrorOmd[]> createBackupResult =
+            Result<BackupFileParameters> createBackupResult =
                 await Pipeline.ExecuteAsync(
                     async ct => await _par.AgentClient.CreateBackup(_par.DbBackupParameters, databaseName,
                         _par.DbServerFoldersSetName, ct), cancellationToken);
 
-            if (createBackupResult.IsT1)
+            if (createBackupResult.IsFailure)
             {
-                ErrorOmd.PrintErrorsOnConsole(createBackupResult.AsT1);
+                createBackupResult.Error.PrintErrorsOnConsole();
                 continue;
             }
 
-            BackupFileParameters? backupFileParameters = createBackupResult.AsT0;
-
-            //თუ ბექაპის დამზადებისას რაიმე პრობლემა დაფიქსირდა, ვჩერდებით.
-            if (backupFileParameters == null)
-            {
-                _logger.LogError("Backup for database {DatabaseName} not created", databaseName);
-                continue;
-            }
+            BackupFileParameters backupFileParameters = createBackupResult.Value;
 
             _par.DownloadFileManager.RemoveRedundantFiles(backupFileParameters.Prefix, backupFileParameters.DateMask,
                 backupFileParameters.Suffix, _par.DownloadSideSmartSchema);

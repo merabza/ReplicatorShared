@@ -3,12 +3,11 @@ using System.Net.Http;
 using System.Threading;
 using DatabaseTools.DbTools;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using ParametersManagement.LibDatabaseParameters;
 using ParametersManagement.LibFileParameters.Models;
 using ReplicatorShared.Data.Models;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 using ToolsManagement.FileManagersMain;
 
@@ -83,13 +82,14 @@ public sealed class DatabaseBackupStepParameters
             return null;
         }
 
-        OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult = DatabaseManagersFactory
+        Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory
             .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
                 null, httpClientFactory, null, null, CancellationToken.None).Result;
 
-        if (createDatabaseManagerResult.IsT1)
+        if (createDatabaseManagerResult.IsFailure)
         {
-            ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+            createDatabaseManagerResult.Error.PrintErrorsOnConsole();
+            return null;
         }
 
         if (databaseBackupParameters is null)
@@ -222,7 +222,7 @@ public sealed class DatabaseBackupStepParameters
 
         if (uploadParameters is not null)
         {
-            return new DatabaseBackupStepParameters(createDatabaseManagerResult.AsT0, localPath, localWorkFileManager,
+            return new DatabaseBackupStepParameters(createDatabaseManagerResult.Value, localPath, localWorkFileManager,
                 databaseBackupParameters.BackupType.Value, databaseSet, databaseNames, downloadFileStorageData,
                 uploadFileStorageData, downloadSideSmartSchema, localSmartSchema, downloadFileManager,
                 dbBackupParameters, downloadProcLineId, compressProcLineId, compressParameters, uploadParameters,

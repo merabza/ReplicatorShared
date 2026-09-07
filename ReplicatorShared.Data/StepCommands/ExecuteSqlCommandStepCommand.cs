@@ -1,12 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using LanguageExt;
 using Microsoft.Extensions.Logging;
 using Polly;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
 using SystemTools.BackgroundTasks;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
+using SystemTools.SystemToolsShared;
 
 namespace ReplicatorShared.Data.StepCommands;
 
@@ -28,11 +28,11 @@ public sealed class ExecuteSqlCommandStepCommand : ProcessesToolAction
 
     protected override async ValueTask<bool> RunAction(CancellationToken cancellationToken = default)
     {
-        Option<ErrorOmd[]> executeCommandResult = await _par.AgentClient.ExecuteCommand(_par.ExecuteQueryCommand,
+        Result executeCommandResult = await _par.AgentClient.ExecuteCommand(_par.ExecuteQueryCommand,
             _executeSqlCommandStep.DatabaseName, cancellationToken);
-        if (executeCommandResult.IsSome)
+        if (executeCommandResult.IsFailure)
         {
-            ErrorOmd.PrintErrorsOnConsole((ErrorOmd[])executeCommandResult);
+            executeCommandResult.Error.PrintErrorsOnConsole();
         }
 
         return true;

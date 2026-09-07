@@ -1,13 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using LanguageExt;
 using Microsoft.Extensions.Logging;
 using Polly;
 using ReplicatorShared.Data.StepParameters;
 using ReplicatorShared.Data.Steps;
 using ReplicatorShared.Data.ToolActions;
 using SystemTools.BackgroundTasks;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
+using SystemTools.SystemToolsShared;
 using ToolsManagement.DatabasesManagement;
 
 namespace ReplicatorShared.Data.StepCommands;
@@ -26,13 +26,13 @@ public sealed class UpdateStatisticsStepCommand : MultiDatabaseProcessesToolActi
     protected override async Task<bool> RunOneDatabaseAction(IDatabaseManager agentClient, string databaseName,
         CancellationToken cancellationToken = default)
     {
-        Option<ErrorOmd[]> updateStatisticsResult = await agentClient.UpdateStatistics(databaseName, cancellationToken);
-        if (!updateStatisticsResult.IsSome)
+        Result updateStatisticsResult = await agentClient.UpdateStatistics(databaseName, cancellationToken);
+        if (updateStatisticsResult.IsSuccess)
         {
             return true;
         }
 
-        ErrorOmd.PrintErrorsOnConsole((ErrorOmd[])updateStatisticsResult);
+        updateStatisticsResult.Error.PrintErrorsOnConsole();
         return false;
     }
 }

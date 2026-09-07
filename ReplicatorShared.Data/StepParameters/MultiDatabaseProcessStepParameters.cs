@@ -1,10 +1,10 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
+using SystemTools.SystemToolsShared;
 using ToolsManagement.DatabasesManagement;
 using ToolsManagement.FileManagersMain;
 
@@ -27,13 +27,14 @@ public sealed class MultiDatabaseProcessStepParameters
         string? databaseServerConnectionName, DatabaseServerConnections databaseServerConnections,
         string procLogFilesFolder)
     {
-        OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult = DatabaseManagersFactory
+        Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory
             .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
                 apiClients, httpClientFactory, null, null, CancellationToken.None).Result;
 
-        if (createDatabaseManagerResult.IsT1)
+        if (createDatabaseManagerResult.IsFailure)
         {
-            ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+            createDatabaseManagerResult.Error.PrintErrorsOnConsole();
+            return null;
         }
 
         FileManager? localWorkFileManager =
@@ -41,7 +42,7 @@ public sealed class MultiDatabaseProcessStepParameters
 
         if (localWorkFileManager != null)
         {
-            return new MultiDatabaseProcessStepParameters(createDatabaseManagerResult.AsT0, localWorkFileManager);
+            return new MultiDatabaseProcessStepParameters(createDatabaseManagerResult.Value, localWorkFileManager);
         }
 
         logger.LogError("workFileManager for procLogFilesFolder does not created");

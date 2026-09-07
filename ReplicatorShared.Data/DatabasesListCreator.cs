@@ -5,9 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using DatabaseTools.DbTools;
 using DatabaseTools.DbTools.Models;
-using OneOf;
 using ReplicatorShared.Data.Models;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 using ToolsManagement.DatabasesManagement;
 
 namespace ReplicatorShared.Data;
@@ -30,14 +29,14 @@ public sealed class DatabasesListCreator
 
     public async Task<List<DatabaseInfoModel>> LoadDatabaseNames(CancellationToken cancellationToken = default)
     {
-        OneOf<List<DatabaseInfoModel>, ErrorOmd[]> getDatabaseNamesResult =
+        Result<List<DatabaseInfoModel>> getDatabaseNamesResult =
             await _agentClient.GetDatabaseNames(cancellationToken);
-        if (getDatabaseNamesResult.IsT1)
+        if (getDatabaseNamesResult.IsFailure)
         {
             return [];
         }
 
-        List<DatabaseInfoModel>? databaseInfos = getDatabaseNamesResult.AsT0;
+        List<DatabaseInfoModel> databaseInfos = getDatabaseNamesResult.Value;
 
         (bool sysBaseDoesMatter, bool checkSysBase) = GetDbSetParams(_databaseSet);
 

@@ -1,11 +1,10 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using ParametersManagement.LibApiClientParameters;
 using ParametersManagement.LibDatabaseParameters;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 using ToolsManagement.DatabasesManagement;
 
 namespace ReplicatorShared.Data.StepParameters;
@@ -27,18 +26,19 @@ public sealed class ExecuteSqlCommandStepParameters
         ApiClients apiClients, string? databaseServerConnectionName,
         DatabaseServerConnections databaseServerConnections)
     {
-        OneOf<IDatabaseManager, ErrorOmd[]> createDatabaseManagerResult = DatabaseManagersFactory
+        Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory
             .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
                 apiClients, httpClientFactory, null, null, CancellationToken.None).Result;
 
-        if (createDatabaseManagerResult.IsT1)
+        if (createDatabaseManagerResult.IsFailure)
         {
-            ErrorOmd.PrintErrorsOnConsole(createDatabaseManagerResult.AsT1);
+            createDatabaseManagerResult.Error.PrintErrorsOnConsole();
+            return null;
         }
 
         if (!string.IsNullOrWhiteSpace(executeQueryCommand))
         {
-            return new ExecuteSqlCommandStepParameters(createDatabaseManagerResult.AsT0, executeQueryCommand);
+            return new ExecuteSqlCommandStepParameters(createDatabaseManagerResult.Value, executeQueryCommand);
         }
 
         StShared.WriteErrorLine("executeQueryCommand does not Specified", useConsole, logger);
