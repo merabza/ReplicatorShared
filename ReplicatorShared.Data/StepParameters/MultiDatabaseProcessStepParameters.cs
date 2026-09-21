@@ -27,9 +27,9 @@ public sealed class MultiDatabaseProcessStepParameters
         string? databaseServerConnectionName, DatabaseServerConnections databaseServerConnections,
         string procLogFilesFolder)
     {
-        Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory
-            .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
-                apiClients, httpClientFactory, null, null, CancellationToken.None).Result;
+        Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(appName,
+            logger, useConsole, databaseServerConnectionName, databaseServerConnections, apiClients, httpClientFactory,
+            null, null, CancellationToken.None).Result;
 
         if (createDatabaseManagerResult.IsFailure)
         {

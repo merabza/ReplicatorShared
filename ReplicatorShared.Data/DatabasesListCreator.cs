@@ -29,8 +29,7 @@ public sealed class DatabasesListCreator
 
     public async Task<List<DatabaseInfoModel>> LoadDatabaseNames(CancellationToken cancellationToken = default)
     {
-        Result<List<DatabaseInfoModel>> getDatabaseNamesResult =
-            await _agentClient.GetDatabaseNames(cancellationToken);
+        Result<List<DatabaseInfoModel>> getDatabaseNamesResult = await _agentClient.GetDatabaseNames(cancellationToken);
         if (getDatabaseNamesResult.IsFailure)
         {
             return [];

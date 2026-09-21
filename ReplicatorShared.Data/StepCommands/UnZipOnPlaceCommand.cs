@@ -41,7 +41,10 @@ public sealed class UnZipOnPlaceCommand : ProcessesToolAction
 
     private bool ProcessFolder(DirectoryInfo curDir, bool useSubFolders = true)
     {
-        _logger.LogInformation("Process Folder {FolderFullName}", curDir.FullName);
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Process Folder {FolderFullName}", curDir.FullName);
+        }
 
         if (useSubFolders && curDir.GetDirectories().Any(dir => !ProcessFolder(dir)))
         {
@@ -66,7 +69,10 @@ public sealed class UnZipOnPlaceCommand : ProcessesToolAction
                 Directory.CreateDirectory(Path.Combine(curDir.FullName, GetNewFolderName(zipFileName, i)));
             var archiver = new ZipClassArchiver(_logger, _useConsole, file.Extension);
 
-            _logger.LogInformation("Unzip {ZipFileFullName}", file.FullName);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Unzip {ZipFileFullName}", file.FullName);
+            }
 
             if (!archiver.ArchiveToPath(file.FullName, newDir.FullName))
             {

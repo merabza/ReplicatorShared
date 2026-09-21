@@ -10,11 +10,11 @@ namespace ReplicatorShared.Data.FolderProcessors;
 
 public class CopyMoveFiles : FolderProcessor
 {
-    private readonly ILogger _logger;
     protected readonly FileManager DestinationFileManager;
     protected readonly int FileMaxLength;
     protected readonly string TempExtension;
     protected readonly EMoveMethod UseMethod;
+    private readonly ILogger _logger;
 
     protected CopyMoveFiles(string name, string description, FileManager fileManager, string? fileSearchPattern,
         bool deleteEmptyFolders, ExcludeSet? excludeSet, bool useSubFolders, bool useProcessFiles,

@@ -26,9 +26,9 @@ public sealed class ExecuteSqlCommandStepParameters
         ApiClients apiClients, string? databaseServerConnectionName,
         DatabaseServerConnections databaseServerConnections)
     {
-        Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory
-            .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
-                apiClients, httpClientFactory, null, null, CancellationToken.None).Result;
+        Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(appName,
+            logger, useConsole, databaseServerConnectionName, databaseServerConnections, apiClients, httpClientFactory,
+            null, null, CancellationToken.None).Result;
 
         if (createDatabaseManagerResult.IsFailure)
         {

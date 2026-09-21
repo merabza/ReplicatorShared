@@ -208,8 +208,11 @@ public sealed class ReplicatorParameters : IParametersWithFileStorages, IParamet
         //თუ აქ მოვედით შედულეს ბარიერი გავლილია, ან პირდაპირ არის მოთხოვნილი ამ შედულეს შესაბამისი ჯობების გაშევბა
         //შედულეს ბარიერის რეალიზება უნდა მოხდეს ბექპროცესის ტაიმერში
         Dictionary<string, JobStep> steps = GetSteps();
-        List<string> jobStepNames = [.. JobsBySchedules.Where(s => s.ScheduleName == scheduleName)
-            .OrderBy(o => o.SequentialNumber).Select(s => s.JobStepName)];
+        List<string> jobStepNames =
+        [
+            .. JobsBySchedules.Where(s => s.ScheduleName == scheduleName).OrderBy(o => o.SequentialNumber)
+                .Select(s => s.JobStepName)
+        ];
 
         List<string> missingJobStepNames = [.. jobStepNames.Except(steps.Keys)];
 

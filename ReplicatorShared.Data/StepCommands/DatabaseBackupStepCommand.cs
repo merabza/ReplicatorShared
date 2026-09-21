@@ -27,8 +27,7 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
             new RetryStrategyOptions<Result<BackupFileParameters>>
             {
                 ShouldHandle =
-                    new PredicateBuilder<Result<BackupFileParameters>>()
-                        .HandleResult(result => result.IsFailure),
+                    new PredicateBuilder<Result<BackupFileParameters>>().HandleResult(result => result.IsFailure),
                 Delay = TimeSpan.FromSeconds(30),
                 MaxRetryAttempts = 2,
                 BackoffType = DelayBackoffType.Exponential,
@@ -133,10 +132,9 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
                 _logger.LogInformation("Backup database {DatabaseName}...", databaseName);
             }
 
-            Result<BackupFileParameters> createBackupResult =
-                await Pipeline.ExecuteAsync(
-                    async ct => await _par.AgentClient.CreateBackup(_par.DbBackupParameters, databaseName,
-                        _par.DbServerFoldersSetName, ct), cancellationToken);
+            Result<BackupFileParameters> createBackupResult = await Pipeline.ExecuteAsync(
+                async ct => await _par.AgentClient.CreateBackup(_par.DbBackupParameters, databaseName,
+                    _par.DbServerFoldersSetName, ct), cancellationToken);
 
             if (createBackupResult.IsFailure)
             {

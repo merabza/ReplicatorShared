@@ -82,9 +82,9 @@ public sealed class DatabaseBackupStepParameters
             return null;
         }
 
-        Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory
-            .CreateDatabaseManager(appName, logger, useConsole, databaseServerConnectionName, databaseServerConnections,
-                null, httpClientFactory, null, null, CancellationToken.None).Result;
+        Result<IDatabaseManager> createDatabaseManagerResult = DatabaseManagersFactory.CreateDatabaseManager(appName,
+            logger, useConsole, databaseServerConnectionName, databaseServerConnections, null, httpClientFactory, null,
+            null, CancellationToken.None).Result;
 
         if (createDatabaseManagerResult.IsFailure)
         {

@@ -49,7 +49,10 @@ public sealed class DuplicateFilesFinder : FolderProcessor
 
         string fileFullName = dFileManager.GetPath(afterRootPath, file.FileName);
 
-        _logger.LogInformation("Analyze file {FileFullName}", fileFullName);
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Analyze file {FileFullName}", fileFullName);
+        }
 
         var fileModel = new FileModel(fileFullName, file.FileLength);
         FileList.Files.Add(fileModel);
@@ -110,7 +113,11 @@ public sealed class DuplicateFilesFinder : FolderProcessor
     private byte[] GetHashSha256(string fileName)
     {
         //_consoleFormatter.WriteInSameLine($"Get Hash Sha256 for file {fileName}");
-        _logger.LogInformation("Get Hash Sha256 for file {FileName}", fileName);
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Get Hash Sha256 for file {FileName}", fileName);
+        }
+
         // ReSharper disable once using
         using FileStream stream = File.OpenRead(fileName);
         return _sha256.ComputeHash(stream);
