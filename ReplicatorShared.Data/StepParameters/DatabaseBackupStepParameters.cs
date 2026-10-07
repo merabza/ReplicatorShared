@@ -15,7 +15,8 @@ namespace ReplicatorShared.Data.StepParameters;
 
 public sealed class DatabaseBackupStepParameters
 {
-    private DatabaseBackupStepParameters(IDatabaseManager agentClient, string localPath,
+    //internal საჭიროა ტესტებისთვის
+    internal DatabaseBackupStepParameters(IDatabaseManager agentClient, string localPath,
         FileManager localWorkFileManager, EBackupType backupType, EDatabaseSet databaseSet, List<string> databaseNames,
         FileStorageData downloadFileStorageData, FileStorageData uploadFileStorageData,
         SmartSchema downloadSideSmartSchema, SmartSchema localSmartSchema, FileManager downloadFileManager,

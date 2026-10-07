@@ -12,4 +12,8 @@
     <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.FileManagersMain\ToolsManagement.FileManagersMain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="ReplicatorShared.Data.Tests" />
+  </ItemGroup>
+
 </Project>

@@ -28,6 +28,9 @@
         <Project Path="../SystemTools/SystemTools.StringMessagesApiContracts/SystemTools.StringMessagesApiContracts.csproj" />
         <Project Path="../SystemTools/SystemTools.SystemToolsShared/SystemTools.SystemToolsShared.csproj" />
     </Folder>
+    <Folder Name="/Tests/">
+        <Project Path="ReplicatorShared.Data.Tests/ReplicatorShared.Data.Tests.csproj" />
+    </Folder>
     <Folder Name="/ToolsManagement/">
         <Project Path="../ToolsManagement/ToolsManagement.ApiClientsManagement/ToolsManagement.ApiClientsManagement.csproj" />
         <Project Path="../ToolsManagement/ToolsManagement.CompressionManagement/ToolsManagement.CompressionManagement.csproj" />

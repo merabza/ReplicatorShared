@@ -34,23 +34,33 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
                 UseJitter = true
             }).Build();
 
+    private readonly ResiliencePipeline<Result<BackupFileParameters>> _createBackupPipeline;
     private readonly string _downloadTempExtension;
     private readonly JobStep _jobStep;
     private readonly ILogger _logger;
     private readonly DatabaseBackupStepParameters _par;
     private readonly bool _useConsole;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public DatabaseBackupStepCommand(bool useConsole, ILogger logger, ProcessManager processManager, JobStep jobStep,
         DatabaseBackupStepParameters par, string downloadTempExtension,
-        ResiliencePipeline<bool>? retryPipeline = null) : base(logger, null, null, processManager, "Database Backup",
-        jobStep.ProcLineId, retryPipeline)
+        ResiliencePipeline<bool>? retryPipeline = null) : this(useConsole, logger, processManager, jobStep, par,
+        downloadTempExtension, retryPipeline, Pipeline)
+    {
+    }
+
+    //internal საჭიროა ტესტებისთვის: ბექაპის შექმნის განმეორების სტრატეგია შეიძლება ჩანაცვლდეს
+    // ReSharper disable once ConvertToPrimaryConstructor
+    internal DatabaseBackupStepCommand(bool useConsole, ILogger logger, ProcessManager processManager, JobStep jobStep,
+        DatabaseBackupStepParameters par, string downloadTempExtension, ResiliencePipeline<bool>? retryPipeline,
+        ResiliencePipeline<Result<BackupFileParameters>> createBackupPipeline) : base(logger, null, null,
+        processManager, "Database Backup", jobStep.ProcLineId, retryPipeline)
     {
         _useConsole = useConsole;
         _logger = logger;
         _jobStep = jobStep;
         _par = par;
         _downloadTempExtension = downloadTempExtension;
+        _createBackupPipeline = createBackupPipeline;
     }
 
     protected override async ValueTask<bool> RunAction(CancellationToken cancellationToken = default)
@@ -132,7 +142,7 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
                 _logger.LogInformation("Backup database {DatabaseName}...", databaseName);
             }
 
-            Result<BackupFileParameters> createBackupResult = await Pipeline.ExecuteAsync(
+            Result<BackupFileParameters> createBackupResult = await _createBackupPipeline.ExecuteAsync(
                 async ct => await _par.AgentClient.CreateBackup(_par.DbBackupParameters, databaseName,
                     _par.DbServerFoldersSetName, ct), cancellationToken);
 
@@ -143,6 +153,18 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
             }
 
             BackupFileParameters backupFileParameters = createBackupResult.Value;
+
+            //ახლადშექმნილი ბექაპი ბაზის ფაილსაცავიდან ხელმისაწვდომი უნდა იყოს. თუ ასე არ არის, ფაილსაცავი არ უთითებს
+            //DbServerFoldersSet-ის ბექაპების ფოლდერზე და ბექაპი ვერც ლოკალურ ფოლდერში მოხვდება, ვერც აიტვირთება
+            if (!_par.DownloadFileManager.ContainsFile(backupFileParameters.Name))
+            {
+                StShared.WriteErrorLine(
+                    $"Backup file {backupFileParameters.Name} was created in {backupFileParameters.FolderName}, " +
+                    $"but it is not found in file storage {_par.DownloadFileStorageData.FileStoragePath}. " +
+                    $"FileStorage must point to backup folder of DbServerFoldersSet {_par.DbServerFoldersSetName}",
+                    _useConsole, _logger, false);
+                continue;
+            }
 
             _par.DownloadFileManager.RemoveRedundantFiles(backupFileParameters.Prefix, backupFileParameters.DateMask,
                 backupFileParameters.Suffix, _par.DownloadSideSmartSchema);
@@ -196,7 +218,8 @@ public sealed class DatabaseBackupStepCommand : ProcessesToolAction
         return currentPeriodFileChecker.HaveCurrentPeriodFile();
     }
 
-    private bool NeedDownload()
+    //internal საჭიროა ტესტებისთვის
+    internal bool NeedDownload()
     {
         string? fileStoragePath = _par.DownloadFileStorageData.FileStoragePath;
 
