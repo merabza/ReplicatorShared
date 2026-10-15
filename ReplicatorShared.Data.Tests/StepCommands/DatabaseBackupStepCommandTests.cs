@@ -38,11 +38,14 @@ public sealed class DatabaseBackupStepCommandTests : IDisposable
     private const string SecondDatabase = "Db2";
 
     private static readonly Error BackupError = Error.Problem("BackupError", "Backup failed on server");
-    private static readonly Error DatabaseListError = Error.Problem("DatabaseListError", "Database list is unavailable");
+
+    private static readonly Error
+        DatabaseListError = Error.Problem("DatabaseListError", "Database list is unavailable");
 
     private static readonly SmartSchema KeepAllSchema = new()
     {
-        LastPreserveCount = 1000, Details = [new SmartSchemaDetail { PeriodType = EPeriodType.Day, PreserveCount = 1000 }]
+        LastPreserveCount = 1000,
+        Details = [new SmartSchemaDetail { PeriodType = EPeriodType.Day, PreserveCount = 1000 }]
     };
 
     private static readonly SmartSchema KeepLatestSchema = new()
@@ -144,10 +147,11 @@ public sealed class DatabaseBackupStepCommandTests : IDisposable
         Assert.Empty(GetBackedUpDatabases());
         //Log is only matched here by Moq, nothing is logged
 #pragma warning disable CA1873
-        _logger.Verify(l => l.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(),
-            It.Is<Exception?>(e => e is ArgumentOutOfRangeException &&
-                                   e.Message.StartsWith("Invalid database set value.", StringComparison.Ordinal)),
-            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+        _logger.Verify(
+            l => l.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(),
+                It.Is<Exception?>(e => e is ArgumentOutOfRangeException &&
+                                       e.Message.StartsWith("Invalid database set value.", StringComparison.Ordinal)),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
 #pragma warning restore CA1873
     }
 
@@ -267,8 +271,7 @@ public sealed class DatabaseBackupStepCommandTests : IDisposable
         string otherFolder = Directory.CreateDirectory(Path.Combine(_rootFolder, "other")).FullName;
         _downloadSideSchema = KeepLatestSchema;
         string oldBackup = CreateFile(_serverBackupFolder, BackupFileName(FirstDatabase, DateTime.Now.AddDays(-10)));
-        string olderBackup =
-            CreateFile(_serverBackupFolder, BackupFileName(FirstDatabase, DateTime.Now.AddDays(-11)));
+        string olderBackup = CreateFile(_serverBackupFolder, BackupFileName(FirstDatabase, DateTime.Now.AddDays(-11)));
         SetupDatabases(UserDatabase(FirstDatabase));
         SetupCreateBackupInFolder(FirstDatabase, otherFolder);
 
@@ -537,7 +540,8 @@ public sealed class DatabaseBackupStepCommandTests : IDisposable
     private void SetupCreateBackupFailure()
     {
         _databaseManager.Setup(m => m.CreateBackup(It.IsAny<DatabaseBackupParametersDomain>(), It.IsAny<string>(),
-            FoldersSetName, It.IsAny<CancellationToken>())).ReturnsAsync(Result.Failure<BackupFileParameters>(BackupError));
+                FoldersSetName, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Failure<BackupFileParameters>(BackupError));
     }
 
     private void SetupCreateBackupInFolder(string databaseName, string folder)
@@ -564,7 +568,7 @@ public sealed class DatabaseBackupStepCommandTests : IDisposable
         return
         [
             .. _databaseManager.Invocations.Where(i => i.Method.Name == nameof(IDatabaseManager.CreateBackup))
-                .Select(i => (string)i.Arguments[1])
+                .Select(i => (string)i.Arguments[1]).Where(name => !string.IsNullOrEmpty(name)).Cast<string>()
         ];
     }
 
@@ -588,9 +592,9 @@ public sealed class DatabaseBackupStepCommandTests : IDisposable
     {
         //Log is only matched here by Moq, nothing is logged
 #pragma warning disable CA1873
-        _logger.Verify(l => l.Log(logLevel, It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((state, _) => state.ToString() == message), It.IsAny<Exception?>(),
-            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), times);
+        _logger.Verify(
+            l => l.Log(logLevel, It.IsAny<EventId>(), It.Is<It.IsAnyType>((state, _) => state!.ToString() == message),
+                It.IsAny<Exception?>(), It.IsAny<Func<It.IsAnyType, Exception?, string>>()), times);
 #pragma warning restore CA1873
     }
 }
