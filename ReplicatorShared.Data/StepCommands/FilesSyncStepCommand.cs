@@ -62,9 +62,7 @@ public sealed class FilesSyncStepCommand : ProcessesToolAction
             }
         }
 
-        int destinationFileMaxLength = _par.DestinationFileStorage.FileNameMaxLength == 0
-            ? 255
-            : _par.DestinationFileStorage.FileNameMaxLength;
+        const int destinationFileMaxLength = 255;
 
         //თუ წყაროს ფოლდერი ცარელაა, გასაკეთებლი არაფერია
         if (!_par.SourceFileManager.IsFolderEmpty(null))

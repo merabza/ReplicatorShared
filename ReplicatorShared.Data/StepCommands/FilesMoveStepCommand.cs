@@ -97,10 +97,7 @@ public sealed class FilesMoveStepCommand : ProcessesToolAction
 
             var moveFiles = new MoveFiles(_logger, _par.SourceFileManager, _par.DestinationFileManager, moveFolderName,
                 _par.UseMethod, _par.UploadTempExtension, _par.DownloadTempExtension, _par.ExcludeSet,
-                _par.MaxFolderCount,
-                _par.DestinationFileStorage.FileNameMaxLength == 0
-                    ? 255
-                    : _par.DestinationFileStorage.FileNameMaxLength);
+                _par.MaxFolderCount, 255);
 
             if (!moveFiles.Run())
             {
