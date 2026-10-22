@@ -7,9 +7,9 @@
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.35.0.4138" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
     <PackageVersion Include="Moq" Version="4.21.0" />
-    <PackageVersion Include="ToolsManagement.CompressionManagement" Version="1.0.9791.18317" />
-    <PackageVersion Include="ToolsManagement.DatabasesManagement" Version="1.0.9791.18317" />
-    <PackageVersion Include="ToolsManagement.FileManagersMain" Version="1.0.9791.18317" />
+    <PackageVersion Include="ToolsManagement.CompressionManagement" Version="1.0.9791.19879" />
+    <PackageVersion Include="ToolsManagement.DatabasesManagement" Version="1.0.9791.19879" />
+    <PackageVersion Include="ToolsManagement.FileManagersMain" Version="1.0.9791.19879" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
   </ItemGroup>
