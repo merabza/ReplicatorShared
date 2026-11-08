@@ -11,9 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.CompressionManagement\ToolsManagement.CompressionManagement.csproj" />
-    <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.DatabasesManagement\ToolsManagement.DatabasesManagement.csproj" />
-    <ProjectReference Include="..\..\ToolsManagement\ToolsManagement.FileManagersMain\ToolsManagement.FileManagersMain.csproj" />
+    <PackageReference Include="ToolsManagement.CompressionManagement" />
+    <PackageReference Include="ToolsManagement.DatabasesManagement" />
+    <PackageReference Include="ToolsManagement.FileManagersMain" />
   </ItemGroup>
 
 </Project>
